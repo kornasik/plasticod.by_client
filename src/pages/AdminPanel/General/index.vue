@@ -101,6 +101,7 @@
     import GeneralService from "../../../services/general";
     import Images from "../Catalog/elements/Images";
     import SocialService from "../../../services/social";
+    import SliderService from "../../../services/slider";
 
     export default {
         components: {
@@ -144,13 +145,22 @@
                     this.images = JSON.parse(data[0].images);
                 }
                 console.log(this.images)
+            });
+
+            SliderService.getSlider().then(({data})=>{
+                this.images = data.map((image)=>{
+                    return `http://192.168.100.4:8080${image.pathImage.slice(1)}`
+                })
             })
         },
         methods: {
             saveGeneralSettings() {
                 GeneralService.updateGeneral({
-                    numberPhone: this.phone,
-                    images: this.images[0],
+                    numberPhone: this.phone
+                });
+
+                SliderService.insertSlider({
+                    image: this.images[0]
                 });
 
                 SocialService.getSocial().then(({data}) => {
