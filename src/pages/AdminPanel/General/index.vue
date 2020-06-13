@@ -158,9 +158,10 @@
                 GeneralService.updateGeneral({
                     numberPhone: this.phone
                 });
-
-                SliderService.insertSlider({
-                    image: this.images[0]
+                this.images.forEach((image)=>{
+                    SliderService.addSlider({
+                        image: image
+                    });
                 });
 
                 SocialService.getSocial().then(({data}) => {

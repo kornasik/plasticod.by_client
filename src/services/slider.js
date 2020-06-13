@@ -13,6 +13,12 @@ class SliderService {
         });
     }
 
+    static addSlider(image) {
+        return axios.post(`${url}/add`, {
+            image
+        });
+    }
+
     static uploadFile(product) {
         return axios.post(`${url}/upload`, {
             product
