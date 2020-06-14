@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const url = 'http://localhost:5000/api/products';
+const url = 'http://localhost:5000/api/product';
 
 class PostService {
     static getProducts() {
@@ -23,8 +23,10 @@ class PostService {
         return axios.delete(`${url}/${id}`)
     }
 
-    static updateProduct(id, product){
-        return axios.put(`${url}/${id}`, product)
+    static updateProduct(product){
+        return axios.post(`${url}/update`, {
+            product
+        })
     }
 }
 

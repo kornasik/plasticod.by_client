@@ -64,9 +64,9 @@
                                                 max-width="300"
                                         >
                                             <v-img
-                                                    class="white--text align-end"
+                                                    class="white&#45;&#45;text align-end"
                                                     height="200px"
-                                                    :src="product.image[0]"
+                                                    :src="pathImage"
                                             >
                                                 <v-card-title>{{product.name}}</v-card-title>
                                             </v-img>
@@ -81,7 +81,7 @@
                                                 <v-btn
                                                         color="orange"
                                                         text
-                                                        @click="$router.push(`catalog/edit/${product._id}`)"
+                                                        @click="$router.push(`catalog/edit/${product.id}`)"
                                                 >
                                                     Изменить
                                                 </v-btn>
@@ -268,6 +268,9 @@
                 const sizeOneMByte = 1024;
                 return Math.round(size / sizeOneMByte);
             },
+            pathImage(){
+                return '../../../assets/no-product.jpg'
+            }
         },
         created() {
             this.getProducts();

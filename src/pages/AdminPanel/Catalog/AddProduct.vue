@@ -15,7 +15,7 @@
                 <v-text-field v-model="product.code" label="Код"></v-text-field>
                 <v-text-field v-model="product.color" label="Цвета корпуса"></v-text-field>
                 <v-text-field v-model="product.drawer" label="Выдвижной ящик"></v-text-field>
-                <v-text-field v-model="product.volumeObeBox" label="Объем одного ящика см.3"></v-text-field>
+                <v-text-field v-model="product.volumeOneBox" label="Объем одного ящика см.3"></v-text-field>
                 <v-text-field v-model="product.volumeAllBox" label="Объем всех ящиков см.3"></v-text-field>
                 <v-text-field v-model="product.weight" label="Вес, кг."></v-text-field>
                 <v-text-field v-model="product.codeCompatibility" label="Стыкуется с кодами:"></v-text-field>
@@ -52,7 +52,7 @@
                 code: '',
                 color: '',
                 drawer: '',
-                volumeObeBox: '',
+                volumeOneBox: '',
                 volumeAllBox: '',
                 weight: '',
                 codeCompatibility: '',
@@ -76,7 +76,7 @@
                         code: '',
                         color: '',
                         drawer: '',
-                        volumeObeBox: '',
+                        volumeOneBox: '',
                         volumeAllBox: '',
                         weight: '',
                         codeCompatibility: '',
@@ -109,7 +109,7 @@
         created(){
             GroupsService.getGroups().then((response)=>{
                 this.groups = response.data.map((group)=>{
-                    return group.nameGroup
+                    return group.name
                 })
             })
         }
