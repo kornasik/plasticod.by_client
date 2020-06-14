@@ -18,7 +18,10 @@ class GroupsService {
     }
 
     static updateGroups(id, group){
-        return axios.put(`${url}/${id}`, group)
+        group.id = id;
+        return axios.post(`${url}/update`, {
+            group
+        })
     }
 }
 

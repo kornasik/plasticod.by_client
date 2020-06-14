@@ -111,12 +111,12 @@
                                     >
 
                                         <v-list-item-content>
-                                            <v-list-item-title v-html="group.nameGroup"></v-list-item-title>
+                                            <v-list-item-title v-html="group.name"></v-list-item-title>
                                             <v-list-item-subtitle v-html="group.description"></v-list-item-subtitle>
                                         </v-list-item-content>
 
-                                        <v-icon size="small" :style="{padding: '0 10px'}" @click="openDialog(group._id)">fas fa-pen</v-icon>
-                                        <v-icon size="small" @click="deleteGroup(group._id)">fas fa-trash</v-icon>
+                                        <v-icon size="small" :style="{padding: '0 10px'}" @click="openDialog(group.id)">fas fa-pen</v-icon>
+                                        <v-icon size="small" @click="deleteGroup(group.id)">fas fa-trash</v-icon>
                                     </v-list-item>
                                 </v-list>
                             <div v-else><h3>Список групп пуст!</h3></div>
@@ -190,9 +190,8 @@
             },
             createNewGroup() {
                 GroupsService.insertGroups({
-                    nameGroup: this.newGroupName,
-                    description: this.newGroupDescription,
-                    images: this.image
+                    name: this.newGroupName,
+                    description: this.newGroupDescription
                 }).then(()=>{
                     this.newGroupName = '';
                     this.newGroupDescription = '';
@@ -229,19 +228,18 @@
             openDialog(id){
                 this.modeDialog = 'edit';
                 const index = this.groups.findIndex((group)=>{
-                    return group._id === id
+                    return group.id === id
                 });
-                this.newGroupName = this.groups[index].nameGroup;
+                this.newGroupName = this.groups[index].name;
                 this.newGroupDescription = this.groups[index].description;
-                this.tempIDGroup = this.groups[index]._id;
+                this.tempIDGroup = this.groups[index].id;
                 this.image = this.groups[index].images;
                 this.isModalAddGroup = true;
             },
             editGroup(){
                 GroupsService.updateGroups(this.tempIDGroup, {
-                    nameGroup: this.newGroupName,
+                    name: this.newGroupName,
                     description: this.newGroupDescription,
-                    images: this.image
                 }).then(()=>{
                     this.newGroupName = '';
                     this.newGroupDescription = '';

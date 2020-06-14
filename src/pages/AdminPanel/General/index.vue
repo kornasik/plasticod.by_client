@@ -151,7 +151,7 @@
                 this.images = data.map((image)=>{
                     return `http://192.168.100.4:8080${image.pathImage.slice(1)}`
                 })
-            })
+            });
         },
         methods: {
             saveGeneralSettings() {
