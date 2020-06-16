@@ -59,12 +59,11 @@
             saveGeneralSettings() {
                 if (this.existAbout) {
                     AboutService.updateAbout({
-                        about: this.about,
-                        id: this.id
+                        text: this.about
                     });
                 } else {
                     AboutService.insertAbout({
-                        about: this.about
+                        text: this.about
                     }).then(() => {
                         setTimeout(() => {
                             this.initAbout()
@@ -76,8 +75,8 @@
             },
             initAbout() {
                 AboutService.getAbout().then(({data}) => {
-                    this.about = data[0].about;
-                    this.id = data[0]._id;
+                    this.about = data[0].text;
+                    this.id = data[0].id;
                     this.existAbout = true;
                 }).catch(() => {
                     this.existAbout = false;

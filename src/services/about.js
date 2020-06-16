@@ -8,13 +8,13 @@ class AboutService {
     }
 
     static insertAbout(about) {
-        return axios.post(`${url}/add-about`, {
+        return axios.post(`${url}`, {
             ...about
         });
     }
 
     static updateAbout(about) {
-        return axios.post(`${url}/edit-about`, {
+        return axios.post(`${url}/update-about`, {
             ...about
         })
     }

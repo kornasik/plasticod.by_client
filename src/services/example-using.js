@@ -1,21 +1,21 @@
 import axios from 'axios';
 
-const url = 'http://localhost:5000/api/example-using';
+const url = 'http://localhost:5000/api/example';
 
 class ExampleUsingService {
     static getExampleUsing() {
         return axios.get(url)
     }
 
-    static insertExampleUsing(exampleUsing) {
-        return axios.post(`${url}/add-example-using`, {
-            ...exampleUsing
+    static insertExampleUsing(example) {
+        return axios.post(url, {
+            ...example
         });
     }
 
-    static updateExampleUsing(exampleUsing) {
-        return axios.post(`${url}/edit-example-using`, {
-            ...exampleUsing
+    static updateExampleUsing(example) {
+        return axios.post(`${url}/update-example`, {
+            ...example
         })
     }
 }

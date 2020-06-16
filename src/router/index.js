@@ -5,7 +5,7 @@ import About from "../pages/About/index";
 import Catalog from "../pages/catalog/Catalog";
 import Group from "../pages/catalog/Group";
 import Product from "../components/Catalog/components/Product";
-import ExampleUsing from '../pages/ExamplesUsing/index';
+import ExampleUsing from '../pages/ExamplesUsing';
 import ShippingAndPayment from '../pages/ShippingAndPayment/index';
 import News from '../pages/News/index';
 import BuyAtRetail from '../pages/BuyAtRetail/index';
