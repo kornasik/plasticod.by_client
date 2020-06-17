@@ -7,15 +7,15 @@ class SliderService {
         return axios.get(url)
     }
 
-    static insertSlider(image) {
+    static addSlider(image) {
         return axios.post(url, {
-            image
+            ...image
         });
     }
 
-    static addSlider(image) {
-        return axios.post(`${url}/add`, {
-            image
+    static deleteSlide(id) {
+        return axios.delete(url, {
+            ...id
         });
     }
 

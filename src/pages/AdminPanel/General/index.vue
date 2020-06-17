@@ -158,11 +158,6 @@
                 GeneralService.updateGeneral({
                     numberPhone: this.phone
                 });
-                this.images.forEach((image)=>{
-                    SliderService.addSlider({
-                        image: image
-                    });
-                });
 
                 SocialService.getSocial().then(({data}) => {
                     if (data.length > 0) {
@@ -199,6 +194,9 @@
                     reader.onload = e => {
                         this.uploadImageData.uploadFileData = e.target.result;
                         this.images.push(e.target.result);
+                            SliderService.addSlider({
+                                image: e.target.result
+                            });
                     };
                     reader.readAsDataURL(file);
                 }
