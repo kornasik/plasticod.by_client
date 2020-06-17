@@ -49,12 +49,12 @@
                         href: '/admin/example-using',
                         title: 'Примеры использования',
                         icon: 'fa fa-images'
-                    },
+                    },/*
                     {
                         href: '/admin/address-shipping',
                         title: 'Условия доставки и оплаты',
                         icon: 'fa fa-truck'
-                    },
+                    },*/
                     {
                         href: '/admin/news',
                         title: 'Новости',
@@ -64,12 +64,12 @@
                         href: '/admin/buy-retail',
                         title: 'Купить в розницу',
                         icon: 'fa fa-money-bill-alt'
-                    },
+                    },/*
                     {
                         href: '/admin/contacts',
                         title: 'Контакты',
                         icon: 'fa fa-address-book'
-                    },
+                    },*/
                     {
                         href: '/admin/orders',
                         title: 'Управление заказами',

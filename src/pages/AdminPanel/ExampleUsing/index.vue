@@ -5,13 +5,6 @@
                 <v-card>
                     <v-toolbar color="#00B0F0" dark>
                         <v-toolbar-title>Примеры использования</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <div class="my-2">
-                            <v-btn small color="green" @click="save">
-                                <v-icon size="small" class="mr-2">fas fa-check</v-icon>
-                                Сохранить
-                            </v-btn>
-                        </div>
                     </v-toolbar>
                 </v-card>
                 <div class="main">
@@ -49,6 +42,7 @@
 <script>
     import Images from "../Catalog/elements/Images";
     import ExampleUsingService from "../../../services/example-using";
+    import logo from '../../../assets/autospace.png';
 
     export default {
         name: 'About',
@@ -56,6 +50,7 @@
             Images
         },
         data: () => ({
+            logo: logo,
             id: '',
             images: [],
             uploadImageData: {
@@ -70,24 +65,6 @@
             this.init();
         },
         methods: {
-            save() {
-                ExampleUsingService.getExampleUsing().then(({data}) => {
-                    this.images = data;
-                    return data
-                }).then((images) => {
-                    if (images.length > 0) {
-                        ExampleUsingService.updateExampleUsing({
-                            image: 'cXdlb2Vybmdlcm1ncXdlb2Vybmdlcm1nO2VybWdvZXJxd21nb2l3ZXJtZ2V3cm1nZXJtZ29pcW1lcmdwJ21xdydpZW9mbSdxd2VpbWcncWV3b2ltcXdlb2Vybmdlcm1nO2VybWdvZXJxd21nb2l3ZXJtZ2V3cm1nZXJtZ29pcW1lcmdwJ21xdydpZW9mbSdxd2VpbWcncWV3b2ltcXdlb2Vybmdlcm1nO2VybWdvZXJxd21nb2l3ZXJtZ2V3cm1nZXJtZ29pcW1lcmdwJ21xdydpZW9mbSdxd2VpbWcncWV3b2ltcXdlb2Vybmdlcm1nO2VybWdvZXJxd21nb2l3ZXJtZ2V3cm1nZXJtZ29pcW1lcmdwJ21xdydpZW9mbSdxd2VpbWcncWV3b2ltcXdlb2Vybmdlcm1nO2VybWdvZXJxd21nb2l3ZXJtZ2V3cm1nZXJtZ29pcW1lcmdwJ21xdydpZW9mbSdxd2VpbWcncWV3b2ltcXdlb2Vybmdlcm1nO2VybWdvZXJxd21nb2l3ZXJtZ2V3cm1nZXJtZ29pcW1lcmdwJ21xdydpZW9mbSdxd2VpbWcncWV3b2ltO2VybWdvZXJxd21nb2l3ZXJtZ2V3cm1nZXJtZ29pcW1lcmdwJ21xdydpZW9mbSdxd2VpbWcncWV3b2lt',
-                            id: 1
-                        });
-                    } else {
-                        ExampleUsingService.insertExampleUsing({
-                            image: 'cXdlb2Vybmdlcm1ncXdlb2Vybmdlcm1nO2VybWdvZXJxd21nb2l3ZXJtZ2V3cm1nZXJtZ29pcW1lcmdwJ21xdydpZW9mbSdxd2VpbWcncWV3b2ltcXdlb2Vybmdlcm1nO2VybWdvZXJxd21nb2l3ZXJtZ2V3cm1nZXJtZ29pcW1lcmdwJ21xdydpZW9mbSdxd2VpbWcncWV3b2ltcXdlb2Vybmdlcm1nO2VybWdvZXJxd21nb2l3ZXJtZ2V3cm1nZXJtZ29pcW1lcmdwJ21xdydpZW9mbSdxd2VpbWcncWV3b2ltcXdlb2Vybmdlcm1nO2VybWdvZXJxd21nb2l3ZXJtZ2V3cm1nZXJtZ29pcW1lcmdwJ21xdydpZW9mbSdxd2VpbWcncWV3b2ltcXdlb2Vybmdlcm1nO2VybWdvZXJxd21nb2l3ZXJtZ2V3cm1nZXJtZ29pcW1lcmdwJ21xdydpZW9mbSdxd2VpbWcncWV3b2ltcXdlb2Vybmdlcm1nO2VybWdvZXJxd21nb2l3ZXJtZ2V3cm1nZXJtZ29pcW1lcmdwJ21xdydpZW9mbSdxd2VpbWcncWV3b2ltO2VybWdvZXJxd21nb2l3ZXJtZ2V3cm1nZXJtZ29pcW1lcmdwJ21xdydpZW9mbSdxd2VpbWcncWV3b2lt'
-                        })
-                    }
-                });
-                this.snackbar = true;
-            },
             onFileChange(event) {
                 if (event.target.files && event.target.files.length) {
                     let file = event.target.files[0];
@@ -98,6 +75,9 @@
                     reader.onload = e => {
                         this.uploadImageData.uploadFileData = e.target.result;
                         this.images.push(e.target.result);
+                        ExampleUsingService.insertExampleUsing({
+                            image: e.target.result
+                        })
                     };
                     reader.readAsDataURL(file);
                 }
@@ -108,7 +88,9 @@
             },
             init() {
                 ExampleUsingService.getExampleUsing().then(({data}) => {
-                    this.images = data;
+                    this.images = data.map((image)=>{
+                        return image.image
+                    })
                 })/*.catch(() => {
                     alert('Неполадки с сервером.');
                     ExampleUsingService.insertExampleUsing({
