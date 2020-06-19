@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {HOST} from "./config";
 
-const url = 'http://localhost:5000/api/about';
+const url = `${HOST}/api/about`;
 
 class AboutService {
     static getAbout() {

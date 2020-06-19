@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {HOST} from "./config";
 
-const url = 'http://localhost:5000/api/general';
+const url = `${HOST}/api/general`;
 
 class GeneralService {
     static createGeneral(general){

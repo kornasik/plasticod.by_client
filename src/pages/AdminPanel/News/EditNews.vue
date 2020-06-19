@@ -22,6 +22,7 @@
 <script>
     import Images from "../Catalog/elements/Images";
     import NewsService from "../../../services/news";
+
     export default {
         name: 'AddNews',
         components: {
@@ -37,10 +38,10 @@
             descriptionNew: '',
             news: []
         }),
-        created(){
-            NewsService.getNews().then(({data})=>{
-                const id = data.findIndex((news)=>{
-                    return news._id === this.$router.history.current.params.id;
+        created() {
+            NewsService.getNews().then(({data}) => {
+                const id = data.findIndex((news) => {
+                    return news.id === Number(this.$router.history.current.params.id);
                 });
                 this.descriptionNew = data[id].description;
                 this.image.push(data[id].image)
@@ -66,7 +67,7 @@
                 const sizeOneMByte = 1024;
                 return Math.round(size / sizeOneMByte);
             },
-            editNew(){
+            editNew() {
                 NewsService.updateNews(this.$router.history.current.params.id, {
                     description: this.descriptionNew,
                     image: this.image[0]

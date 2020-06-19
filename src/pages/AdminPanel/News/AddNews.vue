@@ -58,8 +58,7 @@
             },
             addNew(){
                 NewsService.insertNews({
-                    description: this.descriptionNew,
-                    image: this.image[0]
+                    description: this.descriptionNew
                 });
                 this.$router.go(-1)
             }

@@ -15,19 +15,25 @@
                     </v-toolbar>
                 </v-card>
                 <div class="main">
-                    <v-btn :style="{margin: '0 0 20px auto'}" small color="yellow" @click="()=>{
-                        this.address.push('')
-                    }">
+                    <v-btn :style="{margin: '0 0 20px auto'}" small color="yellow" @click="addAddress">
                         <v-icon size="small" class="mr-2">fas fa-plus</v-icon>
                         Добавить адрес
                     </v-btn>
-                    <v-text-field
-                            label="Адрес"
+                    <div
                             v-for="(field, indexField) in address"
                             :key="indexField"
-                            v-model="address[indexField]"
-                            outlined
-                    ></v-text-field>
+                            :style="{display: 'flex'}"
+                    >
+                        <v-text-field
+                                label="Адрес"
+                                v-model="address[indexField].address"
+                                outlined
+                        />
+                        <v-icon :style="{padding: '20px', display: 'block', height: 'fit-content'}" size="medium"
+                                @click="deleteAddress(field.id)">
+                            fas fa-trash
+                        </v-icon>
+                    </div>
                 </div>
                 <v-snackbar
                         v-model="snackbar"
@@ -50,7 +56,7 @@
 </template>
 
 <script>
-    import BuyRetailService from "../../../services/buy-retail";
+    import AddressShippingService from "../../../services/address-shipping";
 
     export default {
         name: 'About',
@@ -58,28 +64,52 @@
             id: '',
             existAbout: false,
             snackbar: false,
-            address: ['']
+            address: []
         }),
         created() {
             this.init();
         },
         methods: {
             save() {
-                BuyRetailService.updateBuyRetail({
-                    id: this.id,
-                    address: this.address
+                AddressShippingService.getShippingService().then(({data}) => {
+                    return data
+                }).then((addresses) => {
+                    addresses.forEach((address) => {
+                        this.address.forEach((addressTwo) => {
+                            if (address.address !== addressTwo && addressTwo.id === address.id) {
+                                AddressShippingService.updateShippingService({
+                                    id: addressTwo.id,
+                                    address: addressTwo.address
+                                })
+                            }
+                        })
+                    });
                 });
-
                 this.snackbar = true;
             },
             init() {
-                BuyRetailService.getBuyRetail().then(({data}) => {
-                    this.address = data[0].address;
-                    this.id = data[0]._id;
+                AddressShippingService.getShippingService().then(({data}) => {
+                    this.address = data;
+                })
+            },
+            addAddress() {
+                AddressShippingService.insertShippingService({
+                    address: ''
+                }).then(() => {
+                    AddressShippingService.getShippingService().then(({data}) => {
+                        this.address = data;
+                    })
+                })
+            },
+            deleteAddress(id) {
+                AddressShippingService.deleteAddress(id).then(() => {
+                    AddressShippingService.getShippingService().then(({data}) => {
+                        this.address = data;
+                    })
                 }).catch(() => {
-                    BuyRetailService.insertBuyRetail({
-                        address: ['']
-                    });
+                    AddressShippingService.getShippingService().then(({data}) => {
+                        this.address = data;
+                    })
                 })
             }
         }

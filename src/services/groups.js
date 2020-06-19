@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {HOST} from "./config";
 
-const url = 'http://localhost:5000/api/groups';
+const url = `${HOST}/api/groups`;
 
 class GroupsService {
     static getGroups() {

@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {HOST} from "./config";
 
-const url = 'http://localhost:5000/api/user';
+const url = `${HOST}/api/user`;
 
 class UserService {
     static getUser(email, password) {

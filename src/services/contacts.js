@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {HOST} from "./config";
 
-const url = 'http://localhost:5000/api/contacts';
+const url = `${HOST}/api/contacts`;
 
 class ContactsService {
     static getContacts() {

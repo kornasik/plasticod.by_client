@@ -15,14 +15,14 @@
                     </v-toolbar>
                 </v-card>
                 <div :style="{display: 'flex', padding: '10px', border: '1px solid lightgray', margin: '10px', borderRadius: '4px'}"
-                     v-for="(newItem, newIndex) in news" :key="newItem._id">
+                     v-for="(newItem, newIndex) in news" :key="newItem.id">
                     <img :style="{width: '120px'}" :src="newItem.image" alt="image">
                     <p :style="{padding: '10px'}">{{newItem.description}}</p>
                     <div class="new-actions">
-                        <v-icon size="medium" @click="editNew(newItem._id)">
+                        <v-icon size="medium" @click="editNew(newItem.id)">
                             fas fa-edit
                         </v-icon>
-                        <v-icon size="medium" @click="deleteNew(newItem._id, newIndex)">
+                        <v-icon size="medium" @click="deleteNew(newItem.id, newIndex)">
                             fas fa-trash
                         </v-icon>
                     </div>

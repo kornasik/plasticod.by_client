@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {HOST} from "./config";
 
-const url = 'http://localhost:5000/api/address-shipping';
+const url = `${HOST}/api/address-shipping`;
 
 class AddressShippingService {
     static getShippingService() {
@@ -8,15 +9,19 @@ class AddressShippingService {
     }
 
     static insertShippingService(addressShipping) {
-        return axios.post(`${url}/add-address-shipping`, {
+        return axios.post(url, {
             ...addressShipping
         });
     }
 
     static updateShippingService(addressShipping) {
-        return axios.post(`${url}/edit-address-shipping`, {
+        return axios.post(`${url}/update-address`, {
             ...addressShipping
         })
+    }
+
+    static  deleteAddress(id) {
+        return axios.delete(`${url}/${id}`)
     }
 }
 

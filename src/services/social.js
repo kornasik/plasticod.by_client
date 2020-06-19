@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {HOST} from "./config";
 
-const url = 'http://localhost:5000/api/social';
+const url = `${HOST}/api/social`;
 
 class SocialService {
     static getSocial() {

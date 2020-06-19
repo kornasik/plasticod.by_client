@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {HOST} from "./config";
 
-const url = 'http://localhost:5000/api/buy-retail';
+const url = `${HOST}/api/buy-retail`;
 
 class BuyRetailService {
     static getBuyRetail() {

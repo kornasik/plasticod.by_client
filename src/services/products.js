@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {HOST} from "./config";
 
-const url = 'http://localhost:5000/api/product';
+const url = `${HOST}/api/product`;
 
 class PostService {
     static getProducts() {

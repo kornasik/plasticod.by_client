@@ -1,15 +1,16 @@
 import axios from 'axios';
+import {HOST} from "./config";
 
-const url = 'http://localhost:5000/api/news';
+const url = `${HOST}/api/news`;
 
 class NewsService {
     static getNews() {
         return axios.get(url)
     }
 
-    static insertNews(news) {
+    static insertNews(description) {
         return axios.post(url, {
-            news
+            ...description
         });
     }
 
@@ -18,7 +19,10 @@ class NewsService {
     }
 
     static updateNews(id, news){
-        return axios.put(`${url}/${id}`, news)
+        return axios.put(url, {
+            news: news,
+            id: id
+        })
     }
 }
 

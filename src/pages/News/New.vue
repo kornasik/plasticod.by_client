@@ -1,7 +1,7 @@
 <template>
     <div class="new">
         <div class="new-wrapper">
-            <img class="new-image" :src="urlImage" alt="image">
+            {urlImage ? <img class="new-image" :src="urlImage" alt="image"> : ''}
             <div>{{textNew}}</div>
             <div v-if="pdfFile">{{pdfFile}}</div>
         </div>
