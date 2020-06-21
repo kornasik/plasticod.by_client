@@ -30,8 +30,8 @@ class UserService {
     }
 
     static insertUser(user) {
-        return axios.post(`${url}/register`, {
-            user
+        return axios.post(`${url}/registration`, {
+            ...user
         });
     }
 

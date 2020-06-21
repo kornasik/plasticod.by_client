@@ -1,7 +1,7 @@
 <template>
     <div class="groups">
-        <div class="groups__header" @click="openGroup(group.nameGroup)">
-            <div class="groups__header__title">{{group.nameGroup}}</div>
+        <div class="groups__header" @click="openGroup(group.name)">
+            <div class="groups__header__title">{{group.name}}</div>
             <div class="groups__header__description">{{group.description}}</div>
         </div>
         <div class="groups-body">

@@ -46,19 +46,18 @@
             viewProducts: [],
             loading: true
         }),
-        async created() {
-            await GroupsService.getGroups().then(({data}) => {
+        created() {
+            GroupsService.getGroups().then(({data}) => {
                 this.groups = data;
             }).then(() => {
                 this.$store.commit('setCurrentGroup', this.$router.history.current.params.id.toLowerCase())
             });
-            await PostService.getProducts().then(({data}) => {
+            PostService.getProducts().then(({data}) => {
                 this.products = data;
                 this.$store.commit('setProducts', data);
                 this.selectProductsForGroup(data);
-            }).then(() => {
                 setTimeout(() => {
-                    this.loading = !this.loading;
+                    this.loading = false;
                 }, 1500)
             })
         },
@@ -74,7 +73,7 @@
                     });
                 }
                 const id = this.groups.findIndex((group) => {
-                    return group.nameGroup.split(' ').join('').toLowerCase() === this.$router.history.current.params.id.toLowerCase()
+                    return group.name.split(' ').join('').toLowerCase() === this.$router.history.current.params.id.toLowerCase()
                 });
                 this.group = this.groups[id]
             }

@@ -8,16 +8,24 @@
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                     <v-app>
-                        <v-text-field v-model="valueFields.email" label="E-mail *">asd</v-text-field>
-                        <v-text-field v-model="password" label="Пароль *"></v-text-field>
-                        <v-text-field v-model="confirmPassword"
-                                      label="Подтвреждение пароля *"></v-text-field>
+                        <v-text-field v-model="valueFields.email" label="E-mail *" :rules="[rules.required]"
+                                      :error="errors.email"></v-text-field>
+                        <v-text-field v-model="password" label="Пароль *" :type="'password'" :rules="[rules.required]"
+                                      :error="errors.password"></v-text-field>
+                        <v-text-field v-model="confirmPassword" :type="'password'"
+                                      label="Подтвреждение пароля *" :rules="[rules.required]"
+                                      :error="errors.confirmPassword"></v-text-field>
                         <v-text-field v-model="valueFields.nameCompany"
-                                      label="Наименование оргинизации, ИП *"></v-text-field>
-                        <v-text-field v-model="valueFields.legalAddress" label="Юридический адрес *"></v-text-field>
-                        <v-text-field v-model="valueFields.postAddress" label="Почтовый адрес *"></v-text-field>
-                        <v-text-field v-model="valueFields.postcode" label="Почтовый индекс*"></v-text-field>
-                        <v-text-field v-model="valueFields.unp" label="УНП(№ свидетельства) *"></v-text-field>
+                                      label="Наименование оргинизации, ИП *" :rules="[rules.required]"
+                                      :error="errors.nameCompany"></v-text-field>
+                        <v-text-field v-model="valueFields.legalAddress" label="Юридический адрес *"
+                                      :rules="[rules.required]" :error="errors.legalAddress"></v-text-field>
+                        <v-text-field v-model="valueFields.postAddress" label="Почтовый адрес *"
+                                      :rules="[rules.required]" :error="errors.postAddress"></v-text-field>
+                        <v-text-field v-model="valueFields.postcode" label="Почтовый индекс*" :rules="[rules.required]"
+                                      :error="errors.postCode"></v-text-field>
+                        <v-text-field v-model="valueFields.unp" label="УНП(№ свидетельства) *" :rules="[rules.required]"
+                                      :error="errors.unp"></v-text-field>
                         <v-menu
                                 v-model="menu2"
                                 :close-on-content-click="false"
@@ -41,9 +49,11 @@
                         <v-text-field v-model="valueFields.nameBank" label="Наименование банка"></v-text-field>
                         <v-text-field v-model="valueFields.codeBank" label="Код банка"></v-text-field>
                         <v-text-field v-model="valueFields.addressBank" label="Адрес банка"></v-text-field>
-                        <v-text-field v-model="valueFields.fullName" label="Ф.И.О. контактного лица *"></v-text-field>
+                        <v-text-field v-model="valueFields.fullName" label="Ф.И.О. контактного лица *"
+                                      :rules="[rules.required]" :error="errors.fio"></v-text-field>
                         <v-text-field v-model="valueFields.phoneNumber"
-                                      label="Телефон (Пример: (029) 1111111) *"></v-text-field>
+                                      label="Телефон (Пример: (029) 1111111) *" :rules="[rules.required]"
+                                      :error="errors.phoneNumber"></v-text-field>
                     </v-app>
                 </v-expansion-panel-content>
             </v-expansion-panel>
@@ -107,6 +117,7 @@
                             v-model="iAgree"
                             label="Я прочитал (-а) и соглашаюсь с политикой конфиденциальности"
                             required
+                            :error="errors.iAgree"
                     ></v-checkbox>
 
                     <div class="button" @click="registrationUser">
@@ -207,14 +218,74 @@
                 body: '',
                 apartment: '',
                 comment: ''
+            },
+            rules: {
+                required: value => !!value || 'Required.'
+            },
+            errors: {
+                email: false,
+                password: false,
+                confirmPassword: false,
+                nameCompany: false,
+                legalAddress: false,
+                postAddress: false,
+                postCode: false,
+                unp: false,
+                fio: false,
+                phoneNumber: false,
+                iAgree: false
             }
         }),
         methods: {
             registrationUser() {
-                UserService.insertUser({
-                    ...this.valueFields, ...this.address, password: this.password, orders: []
-                });
-                this.$router.push('/login');
+                if (
+                    this.valueFields.email
+                    && this.password
+                    && this.confirmPassword
+                    && this.valueFields.nameCompany
+                    && this.valueFields.legalAddress
+                    && this.valueFields.postcode
+                    && this.valueFields.postAddress
+                    && this.valueFields.unp
+                    && this.valueFields.fullName
+                    && this.valueFields.phoneNumber
+                    && this.iAgree
+                ) {
+                    if (this.confirmPassword === this.password) {
+                        this.errors.email = false;
+                        this.errors.password = false;
+                        this.errors.confirmPassword = false;
+                        this.errors.nameCompany = false;
+                        this.errors.legalAddress = false;
+                        this.errors.postAddress = false;
+                        this.errors.postCode = false;
+                        this.errors.unp = false;
+                        this.errors.fio = false;
+                        this.errors.phoneNumber = false;
+                        this.errors.iAgree = false;
+                        UserService.insertUser({
+                            ...this.valueFields, ...this.address, password: this.password, orders: []
+                        });
+                        this.$router.push('/login');
+                    } else {
+                        this.isOpen = 0;
+                        this.errors.password = true;
+                        this.errors.confirmPassword = true;
+                    }
+                } else {
+                    this.isOpen = 0;
+                    this.errors.email = !this.valueFields.email;
+                    this.errors.password = !this.password;
+                    this.errors.confirmPassword = !this.confirmPassword;
+                    this.errors.nameCompany = !this.valueFields.nameCompany;
+                    this.errors.legalAddress = !this.valueFields.legalAddress;
+                    this.errors.postAddress = !this.valueFields.postAddress;
+                    this.errors.postCode = !this.valueFields.postcode;
+                    this.errors.unp = !this.valueFields.unp;
+                    this.errors.fio = !this.valueFields.fullName;
+                    this.errors.phoneNumber = !this.valueFields.phoneNumber;
+                    this.errors.iAgree = !this.iAgree
+                }
             }
         }
     }

@@ -3,11 +3,11 @@
         <button
                 class="button"
                 v-for="group in groups"
-                :class="[group.nameGroup.split(' ').join('').toLowerCase() === currentGroup ? 'active' : '']"
-                :key="group._id"
-                @click="transitionLink(group.nameGroup)"
+                :class="[group.name.split(' ').join('').toLowerCase() === currentGroup ? 'active' : '']"
+                :key="group.id"
+                @click="transitionLink(group.name)"
         >
-            {{group.nameGroup}}
+            {{group.name}}
         </button>
     </div>
 </template>

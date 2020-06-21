@@ -2,14 +2,14 @@
     <div class="group-element">
         <div class="group-element__header">
             <div class="group-element__header__title">
-                <h1>{{group.nameGroup}}</h1>
+                <h1>{{group.name}}</h1>
             </div>
             <div class="group-element__header__description">
                 {{group.description}}
             </div>
         </div>
         <div class="group-element__products" v-if="products.length > 0">
-            <div class="group-element__products__product" v-for="product in products" :key="product.label" @click="openDetailProduct(product._id)">
+            <div class="group-element__products__product" v-for="product in products" :key="product.label" @click="openDetailProduct(product.id)">
                 <div class="group-element__products__product__title">
                     {{product.name}}
                 </div>
@@ -17,7 +17,7 @@
                     Код: {{product.code}}
                 </div>
                 <div class="group-element__products__product__image">
-                    <img :src="product.image[0]" :alt="product.label">
+                    <img :src="'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Empty_set.svg/1200px-Empty_set.svg.png'" :alt="product.name">
                 </div>
             </div>
         </div>

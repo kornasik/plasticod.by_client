@@ -3,6 +3,8 @@
         <Sidebar v-if="!loading" :currentGroup="$router.history.current.fullPath.split('/')[2]"/>
         <div v-if="!loading" class="product-detail">
             <div class="product-detail__image">
+
+                <!--{{product.image ?
                 <div class="product-detail__image__main">
                     <transition-group name="thumbnailfade" tag="div">
                         <img
@@ -31,6 +33,12 @@
                         </div>
                     </div>
                 </div>
+                :-->
+                <div class="product-detail__image__main">
+                    <img :src="'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Empty_set.svg/1200px-Empty_set.svg.png'"
+                         :alt="product.name">
+                </div>
+                <!--}}-->
                 <div class="product-detail__print" @click="print()"
                      :style="{margin: '60px', color: '#00B0F0', fontWeight: 'bold', cursor: 'pointer'}">Версия для
                     печати
@@ -58,7 +66,7 @@
                 <div class="product-detail__information__volume-one-box item">
                     <div class="product-detail__text">Объем одного ящика см.3:</div>
                     <div class="product-detail__value">
-                        {{product.volumeObeBox}}
+                        {{product.volumeOneBox}}
                     </div>
                 </div>
                 <div class="product-detail__information__volume-all-box item">
@@ -180,15 +188,15 @@
                     let obj = Object.assign({}, this.product);
                     obj.countProduct = this.countProduct;
                     obj.price = this.calcPrice;
-                    const idProduct = basket.findIndex((element)=>{
-                        return element._id === obj._id
+                    const idProduct = basket.findIndex((element) => {
+                        return element.id === obj.id
                     });
-                    if(idProduct >= 0){
+                    if (idProduct >= 0) {
                         basket[idProduct].countProduct += obj.countProduct
                     } else {
                         basket.push(obj);
                     }
-                    localStorage.setItem('basket', JSON.stringify(basket))
+                    localStorage.setItem('basket', JSON.stringify(basket));
                     this.snackbar = true;
                     setTimeout(() => {
                         this.snackbar = false;
@@ -217,10 +225,10 @@
             PostService.getProducts().then(({data}) => {
                 const idProduct = this.$router.history.current.params.id;
                 const indexProduct = data.findIndex((product) => {
-                    return product._id === idProduct
+                    return product.id === Number(idProduct)
                 });
                 this.product = data[indexProduct];
-                data[indexProduct].image.forEach((image, imageIndex) => {
+                /*data[indexProduct].image.forEach((image, imageIndex) => {
                     if (imageIndex !== 0) {
                         this.images.push({
                             'name': image,
@@ -233,7 +241,7 @@
                     'name': data[indexProduct].image[0],
                     'filter': 'image',
                     'id': 'image0'
-                }];
+                }];*/
                 setTimeout(() => {
                     this.loading = !this.loading;
                 }, 1500)
