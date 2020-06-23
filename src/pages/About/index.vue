@@ -15,7 +15,7 @@
         }),
         created() {
             AboutService.getAbout().then(({data}) => {
-                this.text = data[0].about;
+                this.text = data[0].text;
             })
         }
     }

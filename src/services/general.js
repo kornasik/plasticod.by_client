@@ -5,7 +5,11 @@ const url = `${HOST}/api/general`;
 
 class GeneralService {
     static createGeneral(general){
-        return axios.post(`${url}`, general)
+        return axios.post(`${url}`, general, {
+            header : {
+                'Content-Type': 'application/json'
+            }
+        })
     }
 
     static getGeneral() {

@@ -1,27 +1,30 @@
-`<template>
+`
+<template>
     <div class="buy-at-retail">
         <div class="buy-at-retail__description">
             Представленные на нашем сайте пластиковые органайзеры с выдвижными ячейками можно приобрести у наших
             торговых партнёров по следующим адресам:
         </div>
         <ol class="buy-at-retail__list">
-            <li class="buy-at-retail__list__address" v-for="address in listAddress" :key="address">
+            <li class="buy-at-retail__list__address" v-for="{address} in listAddress" :key="address">
                 {{address}}
-            </li>
+            </li><br>
         </ol>
     </div>
 </template>
 
 <script>
-    import BuyRetailService from "../../services/buy-retail";
+    import AddressShippingService from "../../services/address-shipping";
+
     export default {
         name: 'buyAtRetail',
         data: () => ({
             listAddress: []
         }),
         created() {
-            BuyRetailService.getBuyRetail().then(({data})=>{
-                this.listAddress = data[0].address
+            AddressShippingService.getShippingService().then(({data}) => {
+                console.log(data)
+                this.listAddress = data;
             })
         }
     }

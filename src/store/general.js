@@ -1,4 +1,5 @@
 import GeneralService from "../services/general";
+import SocialService from "../services/social";
 
 export default {
     state: {
@@ -18,7 +19,9 @@ export default {
         setGeneral(state, general) {
             state.numberPhone = general.numberPhone;
             state.images = general.images;
-            state.socials = general.socials
+        },
+        setSocial(state, socials){
+            state.socials = socials
         }
     },
     getters: {
@@ -37,6 +40,9 @@ export default {
                 commit('setGeneral', {
                     numberPhone: '(+375) 29 103-15-86'
                 })
+            })
+            await SocialService.getSocial().then(({data})=>{
+                commit('setSocial', data[0])
             })
         }
     }

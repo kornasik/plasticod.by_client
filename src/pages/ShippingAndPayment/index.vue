@@ -5,7 +5,7 @@
         </div>
         <div class="shipping-and-payment__shipping">
             Мы работаем с юридическими лицами и индивидуальными предпринимателями. <br>
-            Получить приобретённый товар можно по адресу: {{address}}
+            Получить приобретённый товар можно по адресу: г.Минск, ул.Сырокомли В., дом 7, "Автоцентр "АвтоМир", 2 этаж, пав. 240
             <transition-group name="thumbnailfade" tag="div">
                 <img v-for="thumb in filteredImages"
                      :key="thumb.id"
@@ -66,8 +66,6 @@
 </template>
 
 <script>
-    import AddressShippingService from "../../services/address-shipping";
-
     export default {
         name: 'ShippingAndPayment',
         data: () => ({
@@ -93,18 +91,6 @@
                 }
 
             }
-        },
-        created(){
-            AddressShippingService.getShippingService().then(({data})=>{
-                this.address = data[0].address;
-                this.images = data[0].images.map((image, idImage)=>{
-                    return {
-                        name: image,
-                        filter: 'plasticod',
-                        id: `image-${idImage}`
-                    }
-                })
-            })
         }
     }
 </script>

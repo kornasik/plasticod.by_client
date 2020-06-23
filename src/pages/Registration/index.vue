@@ -22,7 +22,7 @@
                                       :rules="[rules.required]" :error="errors.legalAddress"></v-text-field>
                         <v-text-field v-model="valueFields.postAddress" label="Почтовый адрес *"
                                       :rules="[rules.required]" :error="errors.postAddress"></v-text-field>
-                        <v-text-field v-model="valueFields.postcode" label="Почтовый индекс*" :rules="[rules.required]"
+                        <v-text-field v-model="valueFields.postCode" label="Почтовый индекс*" :rules="[rules.required]"
                                       :error="errors.postCode"></v-text-field>
                         <v-text-field v-model="valueFields.unp" label="УНП(№ свидетельства) *" :rules="[rules.required]"
                                       :error="errors.unp"></v-text-field>
@@ -148,7 +148,7 @@
                 nameCompany: '',
                 legalAddress: '',
                 postAddress: '',
-                postcode: '',
+                postCode: '',
                 email: '',
                 unp: '',
                 whoIssued: '',
@@ -244,7 +244,7 @@
                     && this.confirmPassword
                     && this.valueFields.nameCompany
                     && this.valueFields.legalAddress
-                    && this.valueFields.postcode
+                    && this.valueFields.postCode
                     && this.valueFields.postAddress
                     && this.valueFields.unp
                     && this.valueFields.fullName
@@ -264,7 +264,7 @@
                         this.errors.phoneNumber = false;
                         this.errors.iAgree = false;
                         UserService.insertUser({
-                            ...this.valueFields, ...this.address, password: this.password, orders: []
+                            ...this.valueFields, ...this.address, password: this.password
                         });
                         this.$router.push('/login');
                     } else {
@@ -280,7 +280,7 @@
                     this.errors.nameCompany = !this.valueFields.nameCompany;
                     this.errors.legalAddress = !this.valueFields.legalAddress;
                     this.errors.postAddress = !this.valueFields.postAddress;
-                    this.errors.postCode = !this.valueFields.postcode;
+                    this.errors.postCode = !this.valueFields.postCode;
                     this.errors.unp = !this.valueFields.unp;
                     this.errors.fio = !this.valueFields.fullName;
                     this.errors.phoneNumber = !this.valueFields.phoneNumber;

@@ -9,7 +9,11 @@ class AboutService {
     }
 
     static insertAbout(about) {
-        return axios.post(`${url}`, {
+        return axios.post(`${url}`, {}, {
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            }
+        }, {
             ...about
         });
     }

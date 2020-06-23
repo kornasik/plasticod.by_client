@@ -9,7 +9,7 @@ class SocialService {
     }
 
     static updateSocial(socials){
-        return axios.put(`${url}/update`, socials)
+        return axios.post(`${url}/update`, socials)
     }
 
     static createSocial(socials){

@@ -159,8 +159,9 @@
                     numberPhone: this.phone
                 });
 
-                SocialService.getSocial().then(({data}) => {
-                    if (data.length > 0) {
+                SocialService.getSocial().then((response) => {
+                    console.log(response);
+                    if (response.data.length > 0) {
                         SocialService.updateSocial({
                             viber: this.viber,
                             skype: this.skype,
