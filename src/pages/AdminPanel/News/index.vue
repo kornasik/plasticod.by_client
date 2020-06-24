@@ -16,7 +16,7 @@
                 </v-card>
                 <div :style="{display: 'flex', padding: '10px', border: '1px solid lightgray', margin: '10px', borderRadius: '4px'}"
                      v-for="(newItem, newIndex) in news" :key="newItem.id">
-                    <img :style="{width: '120px'}" :src="newItem.image" alt="image">
+                    <img :style="{width: '120px'}" :src="newItem.image ? newItem.image : noNew" alt="image">
                     <p :style="{padding: '10px'}">{{newItem.description}}</p>
                     <div class="new-actions">
                         <v-icon size="medium" @click="editNew(newItem.id)">
@@ -42,6 +42,14 @@
                         Close
                     </v-btn>
                 </v-snackbar>
+                <v-progress-circular
+                        class="ma-auto"
+                        v-if="loading"
+                        :size="70"
+                        :width="7"
+                        color="purple"
+                        indeterminate
+                ></v-progress-circular>
             </v-app>
         </div>
     </v-app>
@@ -49,17 +57,24 @@
 
 <script>
     import NewsService from "../../../services/news";
+    import noNew from '../../../assets/news.jpg'
 
     export default {
         name: 'News',
         data: () => ({
             news: [],
-            snackbar: false
+            snackbar: false,
+            noNew: noNew,
+            loading: true
         }),
         created() {
-            NewsService.getNews().then((response) => {
-                this.news = response.data
-            })
+            setTimeout(()=>{
+                NewsService.getNews().then((response) => {
+                    this.news = response.data
+                }).then(()=>{
+                    this.loading = false;
+                })
+            }, 1000)
         },
         methods: {
             deleteNew(id, index) {

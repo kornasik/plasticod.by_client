@@ -1,7 +1,7 @@
 <template>
     <div class="new">
         <div class="new-wrapper">
-            {urlImage ? <img class="new-image" :src="urlImage" alt="image"> : ''}
+            <img class="new-image" :src="urlImage ? urlImage : noNews" alt="image">
             <div>{{textNew}}</div>
             <div v-if="pdfFile">{{pdfFile}}</div>
         </div>
@@ -10,13 +10,17 @@
 </template>
 
 <script>
+    import noNews from '../../assets/news.jpg';
     export default {
         name: 'New',
         props: {
             urlImage: String,
             textNew: String,
             pdfFile: Object
-        }
+        },
+        data: ()=>({
+            noNews
+        })
     }
 </script>
 

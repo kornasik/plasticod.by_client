@@ -15,7 +15,7 @@ class SliderService {
     }
 
     static deleteSlide(id) {
-        return axios.delete(url, {
+        return axios.post(`${url}/delete-slide`,{
             ...id
         });
     }

@@ -8,9 +8,9 @@ class NewsService {
         return axios.get(url)
     }
 
-    static insertNews(description) {
+    static insertNews(news) {
         return axios.post(url, {
-            ...description
+            ...news
         });
     }
 
@@ -19,8 +19,8 @@ class NewsService {
     }
 
     static updateNews(id, news){
-        return axios.put(url, {
-            news: news,
+        return axios.post(`${url}/update`, {
+            ...news,
             id: id
         })
     }

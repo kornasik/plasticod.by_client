@@ -49,9 +49,10 @@
         },
         created(){
             ExampleUsingService.getExampleUsing().then(({data})=>{
-                this.images = data[0].images.map((image, idImage)=>{
+                console.log(data)
+                this.images = data.map((image, idImage)=>{
                     return {
-                        name: image,
+                        name: image.image,
                         filter: 'plasticod',
                         id: `image-${idImage}`
                     }

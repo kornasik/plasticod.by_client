@@ -68,6 +68,7 @@
             <v-carousel
                     cycle
                     height="400"
+                    width="fit-content"
                     hide-delimiter-background
                     show-arrows-on-hover
             >
@@ -237,6 +238,12 @@
 
     .active {
         background-color: #305496;
+    }
+
+    .header__slider {
+        border-top: 1px solid #000080;
+        border-left: 1px solid #000080;
+        border-right: 1px solid #000080;
     }
 
     .dropdown-item {

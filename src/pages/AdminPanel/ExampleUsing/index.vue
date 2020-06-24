@@ -14,7 +14,7 @@
                                 Загрузить изображение
                             </div>
                             <input type="file" name="file" @change="onFileChange"/><br><br>
-                            <Images :images="images" :flex="true" v-if="this.images.length"/>
+                            <Images :images="images" :flex="true" v-if="this.images.length" @emitDeleteImage="emitDeleteImage"/>
                             <h2 v-else>Список изображений пуст!!!</h2>
                         </div>
                     </div>
@@ -25,7 +25,7 @@
                         :right="true"
                         :top="true"
                 >
-                    Данные сохранены
+                    {{textPush}}
                     <v-btn
                             dark
                             text
@@ -50,6 +50,7 @@
             Images
         },
         data: () => ({
+            textPush: "Изображение загружено!",
             logo: logo,
             id: '',
             images: [],
@@ -74,9 +75,12 @@
                     let reader = new FileReader();
                     reader.onload = e => {
                         this.uploadImageData.uploadFileData = e.target.result;
-                        this.images.push(e.target.result);
                         ExampleUsingService.insertExampleUsing({
                             image: e.target.result
+                        }).then(() => {
+                            this.init();
+                            this.textPush = 'Изображение загружено';
+                            this.snackbar = true;
                         })
                     };
                     reader.readAsDataURL(file);
@@ -88,20 +92,23 @@
             },
             init() {
                 ExampleUsingService.getExampleUsing().then(({data}) => {
-                    this.images = data.map((image)=>{
-                        return image.image
+                    this.images = data.map(({image, id}) => {
+                        return {
+                            pathImage: image,
+                            id: id
+                        }
                     })
-                })/*.catch(() => {
+                }).catch(() => {
                     alert('Неполадки с сервером.');
-                    ExampleUsingService.insertExampleUsing({
-                        image: ''
-                    }).then(()=>{
-                        ExampleUsingService.getExampleUsing().then(({data}) => {
-                            this.image = data[0].images;
-                            this.id = data[0].id;
-                        })
-                    })
-                })*/
+                })
+            },
+            emitDeleteImage(id) {
+                ExampleUsingService.deleteExample({id: id});
+                this.images = this.images.filter((image) => {
+                    return !(image.id === id.id)
+                });
+                this.textPush = 'Изоюражение удалено из базы!';
+                this.snackbar = true;
             }
         }
     }

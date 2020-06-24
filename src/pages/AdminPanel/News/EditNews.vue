@@ -12,7 +12,7 @@
             <div :style="{width: 'fit-content', marginTop: '50px'}">
                 <h1>Загрузить изображение</h1>
                 <input type="file" name="file" @change="onFileChange"/><br><br>
-                <Images :images="image"/>
+                <Images :images="image" @emitDeleteImage="emitDeleteImage"/>
             </div>
         </div>
         <v-btn :style="{display: 'block',margin: '30px auto'}" @click="editNew">Редактировать</v-btn>
@@ -29,6 +29,7 @@
             Images
         },
         data: () => ({
+            dataNew: {},
             uploadImageData: {
                 displayFileName: null,
                 uploadFileData: null,
@@ -43,8 +44,10 @@
                 const id = data.findIndex((news) => {
                     return news.id === Number(this.$router.history.current.params.id);
                 });
+                this.dataNew = data[id];
                 this.descriptionNew = data[id].description;
-                this.image.push(data[id].image)
+                this.image.push({pathImage: data[id].image, id: id});
+                this.id = id;
             })
         },
         methods: {
@@ -58,7 +61,7 @@
                     reader.onload = e => {
                         this.uploadImageData.uploadFileData = e.target.result;
                         this.image = [];
-                        this.image.push(e.target.result);
+                        this.image.push({pathImage: e.target.result, id: this.dataNew.id});
                     };
                     reader.readAsDataURL(file);
                 }
@@ -70,9 +73,12 @@
             editNew() {
                 NewsService.updateNews(this.$router.history.current.params.id, {
                     description: this.descriptionNew,
-                    image: this.image[0]
+                    image: this.image[0].pathImage
                 });
                 this.$router.go(-1)
+            },
+            emitDeleteImage() {
+                this.image = [{pathImage: '', id: this.dataNew.id}]
             }
         }
     }

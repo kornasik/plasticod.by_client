@@ -33,7 +33,8 @@
                                 </div>
                             </div>
                             <input type="file" name="file" @change="onFileChange"/><br><br>
-                            <Images :images="images" :flex="true" v-if="this.images.length"/>
+                            <Images :images="images" :flex="true" v-if="this.images.length"
+                                    @emitDeleteImage="emitDeleteImage"/>
                             <h2 v-else>Список изображений пуст!!!</h2>
                         </div>
                     </div>
@@ -83,7 +84,7 @@
                         :right="true"
                         :top="true"
                 >
-                    Данные сохранены
+                    {{textPush}}
                     <v-btn
                             dark
                             text
@@ -110,6 +111,7 @@
         name: 'News',
         data: () => ({
             id: '',
+            textPush: 'Данные сохранены',
             phone: '',
             images: [],
             uploadImageData: {
@@ -144,12 +146,14 @@
                 if (typeof JSON.parse(data[0].images) === 'object') {
                     this.images = JSON.parse(data[0].images);
                 }
-                console.log(this.images)
             });
 
-            SliderService.getSlider().then(({data})=>{
-                this.images = data.map((image)=>{
-                    return `http://192.168.100.4:8080${image.pathImage.slice(1)}`
+            SliderService.getSlider().then(({data}) => {
+                this.images = data.map((image) => {
+                    return {
+                        pathImage: image.pathImage,
+                        id: image.id
+                    }
                 })
             });
         },
@@ -183,6 +187,7 @@
                         })
                     }
                 });
+                this.textPush = 'Данные сохранены';
                 this.snackbar = true;
             },
             onFileChange(event) {
@@ -194,10 +199,21 @@
                     let reader = new FileReader();
                     reader.onload = e => {
                         this.uploadImageData.uploadFileData = e.target.result;
-                        this.images.push(e.target.result);
-                            SliderService.addSlider({
-                                image: e.target.result
-                            });
+                        SliderService.addSlider({
+                            image: e.target.result
+                        }).then(() => {
+                            SliderService.getSlider().then(({data}) => {
+                                this.images = data.map((image) => {
+                                    return {
+                                        pathImage: image.pathImage,
+                                        id: image.id
+                                    }
+                                })
+                            }).then(() => {
+                                this.textPush = 'Слайд добавлен в базу!';
+                                this.snackbar = true;
+                            })
+                        })
                     };
                     reader.readAsDataURL(file);
                 }
@@ -205,6 +221,14 @@
             calcSize(size) {
                 const sizeOneMByte = 1024;
                 return Math.round(size / sizeOneMByte);
+            },
+            emitDeleteImage(id) {
+                SliderService.deleteSlide({id: id});
+                this.images = this.images.filter((image) => {
+                    return !(image.id === id.id)
+                });
+                this.textPush = 'Слайд удалён из базы!';
+                this.snackbar = true;
             }
         }
     }

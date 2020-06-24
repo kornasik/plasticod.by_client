@@ -14,9 +14,9 @@ class ExampleUsingService {
         });
     }
 
-    static updateExampleUsing(example) {
-        return axios.post(`${url}/update-example`, {
-            ...example
+    static deleteExample(id) {
+        return axios.post(`${url}/delete`, {
+            ...id
         })
     }
 }
