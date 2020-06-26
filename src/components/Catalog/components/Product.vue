@@ -86,8 +86,8 @@
                 <div class="product-detail__information__code-compatibility item">
                     <div class="product-detail__text">Стыкуется с кодами:</div>
                     <div :style="{display: 'flex', flexDirection: 'column'}">
-                        <div class="product-detail__value" v-for="code in product.codeCompatibility" :key="code">
-                            {{code}}<br>
+                        <div class="product-detail__value">
+                            {{product.codeCompatibility}}
                         </div>
                     </div>
                 </div>

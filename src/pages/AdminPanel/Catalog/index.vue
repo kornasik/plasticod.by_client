@@ -27,13 +27,14 @@
                                         <div :style="{width: 'fit-content', marginTop: '50px'}">
                                             <h1>Загрузить изображение</h1>
                                             <input type="file" name="file" @change="onFileChange"/><br><br>
-                                            <Images :images="image"/>
+                                            <Images :images="images" @emitDeleteImage="emitDeleteImage"/>
                                         </div>
                                         <v-card-actions>
-                                            <v-btn color="green darken-1" text @click="isModalAddGroup = false">
+                                            <v-btn color="green darken-1" text @click="cancelCreateOrEditGroup">
                                                 Отмена
                                             </v-btn>
-                                            <v-btn color="green darken-1" text @click="modeDialog === 'add' ? createNewGroup() : editGroup()">
+                                            <v-btn color="green darken-1" text
+                                                   @click="modeDialog === 'add' ? createNewGroup() : editGroup()">
                                                 {{modeDialog === 'add' ? 'Добавить' : 'Изменить'}}
                                             </v-btn>
                                         </v-card-actions>
@@ -66,9 +67,13 @@
                                             <v-img
                                                     class="white&#45;&#45;text align-end"
                                                     height="200px"
-                                                    :src="pathImage"
+                                                    :src="product.image"
                                             >
-                                                <v-card-title>{{product.name}}</v-card-title>
+                                                <v-card-title>
+                                                    <div :style="{backgroundColor: 'white', padding: '5px', borderRadius: '4px'}">
+                                                        {{product.name}}
+                                                    </div>
+                                                </v-card-title>
                                             </v-img>
 
                                             <v-card-subtitle class="pb-0">{{product.group}}</v-card-subtitle>
@@ -89,7 +94,7 @@
                                                 <v-btn
                                                         color="red"
                                                         text
-                                                        @click="deleteProduct(product._id)"
+                                                        @click="deleteProduct(product.id)"
                                                 >
                                                     Удалить
                                                 </v-btn>
@@ -100,25 +105,27 @@
                             </div>
                         </v-tab-item>
                         <v-tab-item>
-                                <v-list
-                                        three-line="true"
-                                        v-if="groups.length > 0"
+                            <v-list
+                                    three-line="true"
+                                    v-if="groups.length > 0"
+                            >
+                                <v-list-item
+                                        v-for="group in groups"
+                                        :key="group._id"
+                                        :inactive="true"
                                 >
-                                    <v-list-item
-                                            v-for="group in groups"
-                                            :key="group._id"
-                                            :inactive="true"
-                                    >
 
-                                        <v-list-item-content>
-                                            <v-list-item-title v-html="group.name"></v-list-item-title>
-                                            <v-list-item-subtitle v-html="group.description"></v-list-item-subtitle>
-                                        </v-list-item-content>
+                                    <v-list-item-content>
+                                        <v-list-item-title v-html="group.name"></v-list-item-title>
+                                        <v-list-item-subtitle v-html="group.description"></v-list-item-subtitle>
+                                    </v-list-item-content>
 
-                                        <v-icon size="small" :style="{padding: '0 10px'}" @click="openDialog(group.id)">fas fa-pen</v-icon>
-                                        <v-icon size="small" @click="deleteGroup(group.id)">fas fa-trash</v-icon>
-                                    </v-list-item>
-                                </v-list>
+                                    <v-icon size="small" :style="{padding: '0 10px'}" @click="openDialog(group.id)">fas
+                                        fa-pen
+                                    </v-icon>
+                                    <v-icon size="small" @click="deleteGroup(group.id)">fas fa-trash</v-icon>
+                                </v-list-item>
+                            </v-list>
                             <div v-else><h3>Список групп пуст!</h3></div>
                         </v-tab-item>
                     </v-tabs>
@@ -150,11 +157,13 @@
     import PostService from "../../../services/products";
     import GroupsService from "../../../services/groups";
     import Images from "./elements/Images";
+    import ProductImagesService from "../../../services/productImages";
+    import GroupImagesService from "../../../services/groupImages";
 
     export default {
         name: 'AdminPanelCatalog',
         components: {
-          Images
+            Images
         },
         data: () => ({
             products: [],
@@ -171,31 +180,28 @@
                 uploadFileData: null,
                 file: null
             },
-            image: []
+            images: []
         }),
         methods: {
             deleteProduct(id) {
-                PostService.deleteProducts(id).then(() => {
-                    this.products.splice(this.products.findIndex((product) => {
-                        return product._id === id
-                    }), 1)
-                }).then(() => {
-                    this.snackbarText = "Товар был удален";
-                    this.snackbar = true;
-                    setTimeout(() => {
-                        this.snackbar = false;
-                    }, 5000)
-                })
-
+                PostService.deleteProducts(id);
+                this.products.splice(this.products.findIndex((product) => {
+                    return product.id === id
+                }), 1);
+                this.snackbarText = "Товар был удален";
+                this.snackbar = true;
+                setTimeout(() => {
+                    this.snackbar = false;
+                }, 5000)
             },
             createNewGroup() {
                 GroupsService.insertGroups({
                     name: this.newGroupName,
                     description: this.newGroupDescription
-                }).then(()=>{
+                }).then(() => {
                     this.newGroupName = '';
                     this.newGroupDescription = '';
-                    this.image = [];
+                    this.images = [];
                     this.isModalAddGroup = false;
                     setTimeout(() => {
                         this.getGroups();
@@ -216,8 +222,20 @@
                 })
             },
             getProducts() {
-                PostService.getProducts().then((response) => {
-                    this.products = response.data;
+                PostService.getProducts().then((products) => {
+                    products.data.forEach((product) => {
+                        ProductImagesService.getProductImages(product.id).then((images) => {
+                            if (images.data.length > 0) {
+                                let productCopy = {...product};
+                                productCopy.image = images.data[0].pathImage;
+                                this.products.push(productCopy);
+                            } else {
+                                let productCopy = {...product};
+                                productCopy.image = '';
+                                this.products.push(productCopy)
+                            }
+                        });
+                    })
                 });
             },
             getGroups() {
@@ -225,30 +243,44 @@
                     this.groups = groups.data;
                 })
             },
-            openDialog(id){
+            openDialog(id) {
                 this.modeDialog = 'edit';
-                const index = this.groups.findIndex((group)=>{
+                const index = this.groups.findIndex((group) => {
                     return group.id === id
                 });
                 this.newGroupName = this.groups[index].name;
                 this.newGroupDescription = this.groups[index].description;
                 this.tempIDGroup = this.groups[index].id;
-                this.image = this.groups[index].images;
+                GroupImagesService.getGroupImages(this.tempIDGroup).then(({data}) => {
+                    data.forEach((image) => {
+                        this.images.push({
+                            pathImage: image.pathImage,
+                            id: image.id
+                        })
+                    })
+                });
                 this.isModalAddGroup = true;
             },
-            editGroup(){
+            editGroup() {
                 GroupsService.updateGroups(this.tempIDGroup, {
                     name: this.newGroupName,
                     description: this.newGroupDescription,
-                }).then(()=>{
+                }).then(() => {
                     this.newGroupName = '';
                     this.newGroupDescription = '';
                     this.tempIDGroup = '';
+                    this.images = [];
                     this.isModalAddGroup = false;
-                    this.image = []
-                }).then(()=>{
+                }).then(() => {
                     this.getGroups();
                 })
+            },
+            cancelCreateOrEditGroup() {
+                this.newGroupName = '';
+                this.newGroupDescription = '';
+                this.tempIDGroup = '';
+                this.isModalAddGroup = false;
+                this.images = []
             },
             onFileChange(event) {
                 if (event.target.files && event.target.files.length) {
@@ -259,7 +291,18 @@
                     let reader = new FileReader();
                     reader.onload = e => {
                         this.uploadImageData.uploadFileData = e.target.result;
-                        this.image.push(e.target.result);
+                        this.images.push({
+                            pathImage: e.target.result
+                        });
+                        if (this.tempIDGroup) {
+                            GroupImagesService.insertImagesGroup({
+                                groupId: this.tempIDGroup,
+                                pathImage: e.target.result
+                            }).then(()=>{
+                                this.snackbarText = "Изоражение добавлено!";
+                                this.snackbar = true;
+                            })
+                        }
                     };
                     reader.readAsDataURL(file);
                 }
@@ -268,8 +311,28 @@
                 const sizeOneMByte = 1024;
                 return Math.round(size / sizeOneMByte);
             },
-            pathImage(){
+            pathImage() {
                 return '../../../assets/no-product.jpg'
+            },
+            getImages() {
+                const idProduct = Number(this.$router.history.current.params.id);
+                ProductImagesService.getProductImages(idProduct).then(({data}) => {
+                    let imagesArray = [];
+                    data.forEach((image) => {
+                        imagesArray.push({
+                            pathImage: image.pathImage,
+                            id: image.id
+                        });
+                        this.images = imagesArray;
+                    })
+                });
+            },
+            emitDeleteImage({id}) {
+                console.log(id)
+                GroupImagesService.deleteGroupImage(id)
+                this.images = this.images.filter((image)=>{
+                    return !(image.id === id)
+                })
             }
         },
         created() {

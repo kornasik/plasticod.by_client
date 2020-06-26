@@ -27,15 +27,31 @@
             <div :style="{width: '30%', marginTop: '50px'}">
                 <h1>Загрузить изображение</h1>
                 <input type="file" name="file" @change="onFileChange"/><br><br>
-                <Images :images="product.image"/>
+                <Images :images="images" @emitDeleteImage="emitDeleteImage"/>
             </div>
         </div>
+        <v-snackbar
+                v-model="loading"
+                :color="colorPush"
+                :right="true"
+                :top="true"
+        >
+            {{pushText}}
+            <v-btn
+                    dark
+                    text
+                    @click="loading = false"
+            >
+                Close
+            </v-btn>
+        </v-snackbar>
     </v-app>
 </template>
 
 <script>
     import PostService from "../../../services/products";
     import GroupsService from "../../../services/groups";
+    import ProductImagesService from "../../../services/productImages";
     import Images from "./elements/Images";
 
     export default {
@@ -44,8 +60,12 @@
             Images
         },
         data: () => ({
+            loading: false,
+            colorPush: 'green',
+            pushText: 'Изображение добавлено в базу!',
             files: [],
-            groups: ['Группа 1', 'Группа 2', 'Группа 3', 'Группа 4'],
+            groups: [],
+            images: [],
             product: {
                 name: '',
                 group: '',
@@ -58,8 +78,7 @@
                 codeCompatibility: '',
                 priceBeforeTen: '',
                 priceBeforeHundred: '',
-                priceAfterHundred: '',
-                image: []
+                priceAfterHundred: ''
             },
             uploadImageData: {
                 displayFileName: null,
@@ -68,10 +87,10 @@
             }
         }),
         created() {
+            const idProduct = Number(this.$router.history.current.params.id);
             PostService.getProducts().then((response) => {
                 const id = response.data.findIndex((product) => {
-                    console.log(this.$router.history.current.params.id);
-                    return product.id === Number(this.$router.history.current.params.id);
+                    return product.id === idProduct;
                 });
                 this.product = response.data[id];
             });
@@ -80,7 +99,9 @@
                 this.groups = response.data.map((group) => {
                     return group.name
                 });
-            })
+            });
+
+            this.getImages();
         },
         methods: {
             editProduct() {
@@ -89,6 +110,7 @@
                 });
             },
             onFileChange(event) {
+                const idProduct = Number(this.$router.history.current.params.id);
                 if (event.target.files && event.target.files.length) {
                     let file = event.target.files[0];
                     this.uploadImageData.file = file;
@@ -97,14 +119,55 @@
                     let reader = new FileReader();
                     reader.onload = e => {
                         this.uploadImageData.uploadFileData = e.target.result;
-                        this.product.image.push(e.target.result)
+                        if (this.images.length < 5) {
+                            ProductImagesService.insertImagesProduct({
+                                image: e.target.result,
+                                productId: idProduct
+                            }).then(() => {
+                                this.getImages();
+                                this.pushText = 'Изображение добавлено в базу!';
+                                this.loading = true;
+                            })
+                        } else {
+                            this.asd();
+                        }
                     };
                     reader.readAsDataURL(file);
                 }
             },
+            asd(){
+                this.colorPush = 'red';
+                this.pushText = 'Достигнут лимит изображений!';
+                this.loading = true;
+                setTimeout(() => {
+                    this.colorPush = 'green'
+                }, 10000)
+            },
             calcSize(size) {
                 const sizeOneMByte = 1024;
                 return Math.round(size / sizeOneMByte);
+            },
+            getImages() {
+                const idProduct = Number(this.$router.history.current.params.id);
+                ProductImagesService.getProductImages(idProduct).then(({data}) => {
+                    let imagesArray = [];
+                    data.forEach((image) => {
+                        imagesArray.push({
+                            pathImage: image.pathImage,
+                            id: image.id
+                        });
+                        this.images = imagesArray;
+                    })
+                });
+            },
+            emitDeleteImage({id}) {
+                ProductImagesService.deleteProductImage(id);
+                this.images = this.images.filter((image)=>{
+                   return !(image.productId === id)
+                });
+                this.getImages();
+                this.pushText = 'Изображение удалено из базы!';
+                this.loading = true;
             }
         }
     }

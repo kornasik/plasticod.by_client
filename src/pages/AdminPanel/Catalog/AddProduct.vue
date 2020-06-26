@@ -27,7 +27,7 @@
             <div :style="{width: '30%', marginTop: '50px'}">
                 <h1>Загрузить изображение</h1>
                 <input type="file" name="file" @change="onFileChange"/><br><br>
-                <Images :images="product.image"/>
+                <Images :images="images" @emitDeleteImage="emitDeleteImage"/>
             </div>
         </div>
     </v-app>
@@ -37,6 +37,7 @@
     import PostService from "../../../services/products";
     import GroupsService from "../../../services/groups";
     import Images from "./elements/Images";
+    import ProductImagesService from "../../../services/productImages";
 
     export default {
         name: 'AddProduct',
@@ -46,6 +47,7 @@
         data: () => ({
             files: [],
             groups: [],
+            images: [],
             product: {
                 name: '',
                 group: '',
@@ -58,8 +60,7 @@
                 codeCompatibility: '',
                 priceBeforeTen: '',
                 priceBeforeHundred: '',
-                priceAfterHundred: '',
-                image: []
+                priceAfterHundred: ''
             },
             uploadImageData: {
                 displayFileName: null,
@@ -69,7 +70,7 @@
         }),
         methods: {
             addProduct() {
-                PostService.insertProducts(this.product).then(() => {
+                PostService.insertProducts(this.product).then(({data}) => {
                     this.products = {
                         name: '',
                         group: '',
@@ -84,8 +85,16 @@
                         priceBeforeHundred: '',
                         priceAfterHundred: '',
                     };
-                    this.$router.go(-1);
+                    return data.id
+                }).then((id) => {
+                    this.images.forEach((image) => {
+                        ProductImagesService.insertImagesProduct({
+                            image: image.pathImage,
+                            productId: id
+                        })
+                    })
                 });
+                this.$router.go(-1);
             },
             onFileChange(event) {
                 if (event.target.files && event.target.files.length) {
@@ -96,7 +105,9 @@
                     let reader = new FileReader();
                     reader.onload = e => {
                         this.uploadImageData.uploadFileData = e.target.result;
-                        this.product.image.push(e.target.result)
+                        this.images.push({
+                            pathImage: e.target.result
+                        })
                     };
                     reader.readAsDataURL(file);
                 }
@@ -104,11 +115,16 @@
             calcSize(size) {
                 const sizeOneMByte = 1024;
                 return Math.round(size / sizeOneMByte);
+            },
+            emitDeleteImage(id) {
+                let copyImages = [...this.images];
+                copyImages.splice(id, 1);
+                this.images = copyImages;
             }
         },
-        created(){
-            GroupsService.getGroups().then((response)=>{
-                this.groups = response.data.map((group)=>{
+        created() {
+            GroupsService.getGroups().then((response) => {
+                this.groups = response.data.map((group) => {
                     return group.name
                 })
             })
