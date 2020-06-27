@@ -5,23 +5,33 @@
             <div class="groups__header__description">{{group.description}}</div>
         </div>
         <div class="groups-body">
-            <img v-for="(image, imageIndex) in group.images" :key="`${group._id}${imageIndex}`" :src="image" alt="image"/>
+            <img v-for="(image, imageIndex) in images" :key="`${group.id}${imageIndex}`" :src="image.pathImage"
+                 alt="image"/>
         </div>
     </div>
 </template>
 
 <script>
+    import GroupImagesService from "../../../services/groupImages";
+
     export default {
         name: 'Group',
         props: {
             group: Object
         },
-        data: () => ({}),
+        data: () => ({
+            images: []
+        }),
         methods: {
-            openGroup(nameGroup){
+            openGroup(nameGroup) {
                 this.$store.commit('setCurrentGroup', nameGroup);
                 this.$router.push(`catalog/${nameGroup.split(' ').join('').toLowerCase()}`)
             }
+        },
+        created() {
+            GroupImagesService.getAllGroupsImages().then(({data}) => {
+                this.images = data;
+            })
         }
     }
 </script>

@@ -9,6 +9,9 @@ class GroupImagesService {
             id: id
         })
     }
+    static getAllGroupsImages() {
+        return axios.get(`${url}/all-group-images`)
+    }
 
     static insertImagesGroup({pathImage, groupId}) {
         return axios.post(`${url}/insert`, {

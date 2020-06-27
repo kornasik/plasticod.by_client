@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    /*import UserService from "./services/user";*/
+    import UserService from "./services/user";
     export default {
         name: 'App',
         data: () => ({}),
@@ -12,9 +12,9 @@
                 const token = localStorage.getItem('token');
                 this.$store.commit('setToken', token);
                 this.$store.commit('setLogin', true);
-                /*await UserService.loadDataForUser(token).then( async ({data})=>{
+                await UserService.loadDataForUser(token).then( async ({data})=>{
                    await this.$store.commit('setDataUser', data);
-                })*/
+                })
             }
             await this.$store.dispatch('getGeneral');
         }

@@ -4,8 +4,7 @@
         <div v-if="!loading" class="product-detail">
             <div class="product-detail__image">
 
-                <!--{{product.image ?
-                <div class="product-detail__image__main">
+                <!--{{images.length > 0 ? --><div class="product-detail__image__main" v-if="images.length > 0">
                     <transition-group name="thumbnailfade" tag="div">
                         <img
                                 @click="showLightboxMain(mainImage[0]['name'])"
@@ -33,12 +32,10 @@
                         </div>
                     </div>
                 </div>
-                :-->
-                <div class="product-detail__image__main">
+                <div class="product-detail__image__main" v-else>
                     <img :src="'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Empty_set.svg/1200px-Empty_set.svg.png'"
                          :alt="product.name">
                 </div>
-                <!--}}-->
                 <div class="product-detail__print" @click="print()"
                      :style="{margin: '60px', color: '#00B0F0', fontWeight: 'bold', cursor: 'pointer'}">Версия для
                     печати
@@ -160,6 +157,7 @@
 <script>
     import Sidebar from "./Sidebar";
     import PostService from "../../../services/products";
+    import ProductImagesService from "../../../services/productImages";
 
     export default {
         name: 'Product',
@@ -228,20 +226,22 @@
                     return product.id === Number(idProduct)
                 });
                 this.product = data[indexProduct];
-                /*data[indexProduct].image.forEach((image, imageIndex) => {
-                    if (imageIndex !== 0) {
-                        this.images.push({
-                            'name': image,
-                            'filter': 'image',
-                            'id': 'image' + imageIndex
-                        })
-                    }
+                ProductImagesService.getProductImages(idProduct).then(({data})=>{
+                    data.forEach(({pathImage}, imageIndex) => {
+                        if (imageIndex !== 0) {
+                            this.images.push({
+                                'name': pathImage,
+                                'filter': 'image',
+                                'id': 'image' + imageIndex
+                            })
+                        }
+                    });
+                    this.mainImage = [{
+                        'name': data[0].pathImage,
+                        'filter': 'image',
+                        'id': 'image0'
+                    }];
                 });
-                this.mainImage = [{
-                    'name': data[indexProduct].image[0],
-                    'filter': 'image',
-                    'id': 'image0'
-                }];*/
                 setTimeout(() => {
                     this.loading = !this.loading;
                 }, 1500)

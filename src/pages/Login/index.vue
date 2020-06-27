@@ -23,6 +23,21 @@
             <a class="remember-password" @click="$router.push('/reset-password')">Забыли пароль?</a>
             <button class="button" @click="login">Войти</button>
         </div>
+        <v-snackbar
+                v-model="snackbar"
+                color="red"
+                :right="true"
+                :top="true"
+        >
+            E-mail или пароль введены не верно!
+            <v-btn
+                    text
+                    color="success"
+                    @click="snackbar = false"
+            >
+                Закрыть
+            </v-btn>
+        </v-snackbar>
     </div>
 </template>
 
@@ -40,6 +55,7 @@
         data: () => ({
             email: '',
             password: '',
+            snackbar: false,
             errors: {
                 auth: false
             }
@@ -56,9 +72,10 @@
 
                         this.$router.push(this.url);
                     }
-                }).catch(() => {
-                    this.errors.auth = true;
                 });
+                setTimeout(()=>{
+                    this.errors.auth = true;
+                }, 1500);
                 this.$emit('emitLogin')
             }
         }

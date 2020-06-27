@@ -1,75 +1,87 @@
 <template>
     <div class="basket">
-        <div class="basket__title">
-            СОДЕРЖИМОЕ КОРЗИНЫ:
-        </div>
-        <div v-if="emptyBasket" class="empty-basket">
-            Корзина пустая. Перейдите в <a href="/catalog">каталог</a>.
-        </div>
-        <div v-else>
-            <div class="basket__header">
-                <Button @click="$router.push('/catalog')" :text-button="'Продолжить покупки'" :width="'200px'"/>
-                <Button @click="clearBasket" :text-button="'Очистить корзину'" :width="'200px'"/>
+        <div v-if="!loading">
+            <div class="basket__title">
+                СОДЕРЖИМОЕ КОРЗИНЫ:
             </div>
-            <div class="list-product">
-                <v-data-table
-                        :headers="headers"
-                        :items="products"
-                        class="elevation-1"
-                        hide-default-footer
-                >
-                    <template v-slot:item.title="{item}">
-                        <div :style="{color: '#305496', display: 'flex'}">
-                            <img :style="{height:'120px'}" :src="item.image[0]" alt="">
-                            <div :style="{padding: '10px 0 30px 20px'}">
+            <div v-if="emptyBasket" class="empty-basket">
+                Корзина пустая. Перейдите в <a href="/catalog">каталог</a>.
+            </div>
+            <div v-else>
+                <div class="basket__header">
+                    <Button @click="$router.push('/catalog')" :text-button="'Продолжить покупки'" :width="'200px'"/>
+                    <Button @click="clearBasket" :text-button="'Очистить корзину'" :width="'200px'"/>
+                </div>
+                <div class="list-product">
+                    <v-data-table
+                            :headers="headers"
+                            :items="products"
+                            class="elevation-1"
+                            hide-default-footer
+                    >
+                        <template v-slot:item.title="{item}">
+                            <div :style="{color: '#305496', display: 'flex'}">
+                                <img :style="{height:'110px', padding: '5px 0'}" :src="item.image" alt="">
+                                <div :style="{padding: '10px 0 30px 20px'}">
                                 <span @click="transitionOnProduct(item)"
                                       :style="{cursor: 'pointer'}">{{item.name}}</span>
-                                <div :style="{padding: '30px 0 0 0', cursor: 'pointer'}" @click="deleteProduct(item)">
-                                    Удалить товар
-                                    <v-icon color="black">mdi-delete</v-icon>
+                                    <div :style="{padding: '30px 0 0 0', cursor: 'pointer'}" @click="deleteProduct(item)">
+                                        Удалить товар
+                                        <v-icon color="black">mdi-delete</v-icon>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </template>
-                    <template v-slot:item.price="{item}">
-                        <div>
-                            {{calcPrice(item)}} BYN
-                        </div>
-                    </template>
-                    <template v-slot:item.count="{item}">
-                        <div>
-                            <input type="number" v-model="item.countProduct" @change="changeCount">
-                        </div>
-                    </template>
-                    <template v-slot:item.total="{item}">
-                        <div>
-                            {{Number(calcPrice(item).split(',')[0]) * Number(item.countProduct)}} BYN
-                        </div>
-                    </template>
-                    <template v-slot:item.weight="{item}">
-                        <div>
-                            {{(+item.weight * +item.countProduct).toFixed(2)}} кг.
-                        </div>
-                    </template>
-                    <template v-slot:footer>
-                        <div :style="{ display:'flex', justifyContent: 'space-around', padding: '20px', backgroundColor:'#F2F2F2'}">
-                            <div :style="{ marginLeft: 'auto'}">
-                                Стоимость Вашего заказа: {{calcTotal()}} руб.
+                        </template>
+                        <template v-slot:item.price="{item}">
+                            <div>
+                                {{calcPrice(item)}} BYN
                             </div>
-                            <div :style="{ margin: 'auto 30px'}">
-                                Вес: {{calcWeight()}} кг.
+                        </template>
+                        <template v-slot:item.count="{item}">
+                            <div>
+                                <input type="number" v-model="item.countProduct" @change="changeCount">
                             </div>
-                        </div>
-                    </template>
-                </v-data-table>
+                        </template>
+                        <template v-slot:item.total="{item}">
+                            <div>
+                                {{Number(calcPrice(item).split(',')[0]) * Number(item.countProduct)}} BYN
+                            </div>
+                        </template>
+                        <template v-slot:item.weight="{item}">
+                            <div>
+                                {{(+item.weight * +item.countProduct).toFixed(2)}} кг.
+                            </div>
+                        </template>
+                        <template v-slot:footer>
+                            <div :style="{ display:'flex', justifyContent: 'space-around', padding: '20px', backgroundColor:'#F2F2F2'}">
+                                <div :style="{ marginLeft: 'auto'}">
+                                    Стоимость Вашего заказа: {{calcTotal()}} руб.
+                                </div>
+                                <div :style="{ margin: 'auto 30px'}">
+                                    Вес: {{calcWeight()}} кг.
+                                </div>
+                            </div>
+                        </template>
+                    </v-data-table>
+                </div>
+                <Button @click="$router.push('/issue-order')" :width="'200px'" :style="{margin: '20px 20px 20px auto'}"/>
             </div>
-            <Button @click="$router.push('/issue-order')" :width="'200px'" :style="{margin: '20px 20px 20px auto'}"/>
         </div>
+        <v-progress-circular
+                :style="{marginLeft: '400px', paddingTop: '500px!important', display: 'block'}"
+                class="ma-auto"
+                :size="70"
+                :width="7"
+                color="purple"
+                indeterminate
+                v-else
+        ></v-progress-circular>
     </div>
 </template>
 
 <script>
     import Button from "../../shared/elements/Button";
+    import ProductImagesService from "../../services/productImages";
 
     export default {
         name: 'Basket',
@@ -77,6 +89,7 @@
             Button
         },
         data: () => ({
+            loading: true,
             headers: [
                 {
                     text: 'Товар',
@@ -110,11 +123,12 @@
                 }
             ],
             products: [],
-            emptyBasket: true
+            emptyBasket: true,
+            images: []
         }),
         methods: {
             transitionOnProduct(product) {
-                this.$router.push(`catalog/${product.group.split(' ').join('').toLowerCase()}/${product._id}`);
+                this.$router.push(`catalog/${product.group.split(' ').join('').toLowerCase()}/${product.id}`);
             },
             asd() {
                 console.log('asd')
@@ -150,7 +164,7 @@
                 });
                 this.products.splice(id, 1);
                 localStorage.setItem('basket', JSON.stringify(this.products));
-                if(this.products.length < 1){
+                if (this.products.length < 1) {
                     this.emptyBasket = true;
                     localStorage.removeItem('basket')
                 }
@@ -162,7 +176,19 @@
         created() {
             this.emptyBasket = localStorage.getItem('basket') === null;
             if (!this.emptyBasket) {
-                this.products = JSON.parse(localStorage.getItem('basket'))
+                let copyProducts = JSON.parse(localStorage.getItem('basket'));
+                copyProducts.map((product) => {
+                    ProductImagesService.getProductImages(product.id).then(({data}) => {
+                        return data
+                    }).then((images) => {
+                        product.image = images[0].pathImage;
+                    });
+                    return product
+                });
+                setTimeout(()=>{
+                    this.products = copyProducts;
+                    this.loading = false
+                }, 1500)
             }
         }
     }

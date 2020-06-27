@@ -5,26 +5,14 @@ const url = `${HOST}/api/user`;
 
 class UserService {
     static getUser(email, password) {
-        return axios.post(url, {
+        return axios.post(`${url}/login`, {
             email,
             password
         })
     }
 
     static loadDataForUser(token) {
-        return axios.post(`${url}/login`, {
-            token
-        })
-    }
-
-    static addOrder(token, order) {
-        return axios.post(`${url}/add-order`, {
-            token, order
-        })
-    }
-
-    static getOrders(token) {
-        return axios.post(`${url}/get-orders`, {
+        return axios.post(`${url}/data-user`, {
             token
         })
     }
@@ -35,12 +23,17 @@ class UserService {
         });
     }
 
-    static deleteUser(id) {
-        return axios.delete(`${url}/${id}`)
+    static deleteUser(token) {
+        return axios.post(`${url}/delete-user`, {
+            token
+        })
     }
 
-    static updateUser(id, user) {
-        return axios.put(`${url}/${id}`, user)
+    static updateUser(token, user) {
+        return axios.post(`${url}/update-user`, {
+            ...user,
+            token: token
+        })
     }
 
 

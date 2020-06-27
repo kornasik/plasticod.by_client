@@ -9,6 +9,9 @@ class ProductImagesService {
             id: id
         })
     }
+    static getAllImages() {
+        return axios.get(`${url}/all-image`)
+    }
 
     static insertImagesProduct({image, productId}) {
         return axios.post(`${url}/insert`, {

@@ -274,6 +274,7 @@
     import ConfirmationOrder from "./ConfirmationOrder";
     import UserService from "../../services/user";
     import GeneralService from "../../services/general";
+    import OrderService from "../../services/order";
     import axios from 'axios';
 
     export default {
@@ -416,7 +417,7 @@
                     const basket = JSON.parse(localStorage.getItem('basket'));
                     const token = localStorage.getItem('token');
                     GeneralService.getGeneral().then(({data}) => {
-                        UserService.addOrder(token, {
+                        OrderService.addOrder(token, {
                             dataUser: dataUser,
                             basket: basket,
                             shipping: this.shipping,
@@ -426,8 +427,7 @@
                         return data
                     }).then((response) => {
                         GeneralService.updateGeneral({
-                            numberOrder: String(Number(response[0].numberOrder) + 1),
-                            id: response[0]._id
+                            numberOrder: String(Number(response[0].numberOrder) + 1)
                         })
                     });
 

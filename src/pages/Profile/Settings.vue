@@ -28,7 +28,7 @@
                                       label="Наименование оргинизации, ИП *"></v-text-field>
                         <v-text-field v-model="valueFields.legalAddress" label="Юридический адрес *"></v-text-field>
                         <v-text-field v-model="valueFields.postAddress" label="Почтовый адрес *"></v-text-field>
-                        <v-text-field v-model="valueFields.postcode" label="Почтовый индекс*"></v-text-field>
+                        <v-text-field v-model="valueFields.postCode" label="Почтовый индекс*"></v-text-field>
                         <v-text-field v-model="valueFields.unp" label="УНП(№ свидетельства) *"></v-text-field>
                         <v-menu
                                 v-model="menu2"
@@ -116,11 +116,7 @@
                 Сохранить
             </div>
 
-            <div class="button" @click="()=>{}">
-                Отменить
-            </div>
-
-            <div class="button" @click="()=>{}">
+            <div class="button" @click="deleteUser" :style="{cursor: 'pointer'}">
                 Удалить профиль
             </div>
         </div>
@@ -129,6 +125,7 @@
 
 <script>
     import UserService from "../../services/user";
+
     export default {
         name: 'Registration',
         data: () => ({
@@ -145,7 +142,7 @@
                 nameCompany: '',
                 legalAddress: '',
                 postAddress: '',
-                postcode: '',
+                postCode: '',
                 email: '',
                 unp: '',
                 whoIssued: '',
@@ -223,7 +220,7 @@
                 this.valueFields.nameCompany = dataUser.nameCompany;
                 this.valueFields.legalAddress = dataUser.legalAddress;
                 this.valueFields.postAddress = dataUser.postAddress;
-                this.valueFields.postcode = dataUser.postcode;
+                this.valueFields.postCode = dataUser.postCode;
                 this.valueFields.email = dataUser.email;
                 this.valueFields.unp = dataUser.unp;
                 this.valueFields.whoIssued = dataUser.whoIssued;
@@ -243,20 +240,25 @@
                 this.address.apartment = dataUser.apartment;
                 this.address.comment = dataUser.comment;
             },
-            updateUser(){
-                UserService.updateUser(localStorage.getItem('token'), {...this.valueFields, ... this.address});
+            updateUser() {
+                UserService.updateUser(localStorage.getItem('token'), {...this.valueFields, ...this.address});
                 this.$store.commit('setDataUser', {...this.valueFields, ...this.address});
                 this.snackbar = true;
-                setTimeout(()=>{
+                setTimeout(() => {
                     this.snackbar = false;
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         this.$router.go(-1);
                     }, 1000)
                 }, 1500)
+            },
+            deleteUser() {
+                UserService.deleteUser(localStorage.getItem('token'));
+                localStorage.removeItem('token');
+                this.$router.push('/about');
             }
         },
         created() {
-            setTimeout(()=>{
+            setTimeout(() => {
                 this.init();
             }, 1500)
         }

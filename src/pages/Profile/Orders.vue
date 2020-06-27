@@ -83,6 +83,36 @@
             orders: []
         }),
         created() {
+            OrderService.getOrders(localStorage.getItem('token')).then(({data}) => {
+                const orderCopy = data[0].order
+                const responseOrder = JSON.parse(orderCopy);
+                console.log(responseOrder)
+                this.errors.emptyOrders = false;
+                this.basket = responseOrder;
+                this.orders = responseOrder.map((order) => {
+                    let total = 0;
+                    if (responseOrder.length > 1) {
+                        total = responseOrder.reduce((next, current) => {
+                            return (current.price * current.countProduct) + (next.price * next.countProduct)
+                        })
+                    } else {
+                        total = responseOrder[0].countProduct * responseOrder[0].price
+                    }
+                    return {
+                        number: order.numberOrder,
+                        status: order.status === 'open' ? "Открытый" : "Закрытый",
+                        customer: order.dataUser.fullName,
+                        date: order.createdAt,
+                        delivery: order.shipping === 'transportCompany' ? "Транспортной компанией" : "Самовывоз",
+                        total: total,
+                        email: order.dataUser.email
+                    }
+                })
+            }).catch(() => {
+                this.errors.emptyOrders = true;
+            });
+        },
+        created() {
             UserService.getOrders(localStorage.getItem('token')).then(({data}) => {
                 this.errors.emptyOrders = false;
                 this.basket = data.orders;
