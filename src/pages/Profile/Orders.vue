@@ -29,8 +29,8 @@
                 </template>
                 <template v-slot:item.customer="{item}">
                     <div>
-                        {{item.customer}}
-                        <p>{{item.email}}</p>
+                        ФИО: {{item.customer}}
+                        <p>E-mail: {{item.email}}</p>
                     </div>
                 </template>
                 <template v-slot:item.date="{item}">
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-    import UserService from "../../services/user";
+    import OrderService from "../../services/order";
 
     export default {
         name: "ProfileOrders",
@@ -84,55 +84,27 @@
         }),
         created() {
             OrderService.getOrders(localStorage.getItem('token')).then(({data}) => {
-                const orderCopy = data[0].order
-                const responseOrder = JSON.parse(orderCopy);
-                console.log(responseOrder)
                 this.errors.emptyOrders = false;
-                this.basket = responseOrder;
-                this.orders = responseOrder.map((order) => {
-                    let total = 0;
-                    if (responseOrder.length > 1) {
-                        total = responseOrder.reduce((next, current) => {
+                this.orders = data.map(({order, createdAt}) => {
+                    const orderCopy = JSON.parse(order);
+                    console.log(orderCopy)
+                    this.basket = orderCopy.basket;
+                    let total = 20;
+                    if (orderCopy.basket.length > 1) {
+                        total = orderCopy.basket.reduce((next, current) => {
                             return (current.price * current.countProduct) + (next.price * next.countProduct)
                         })
                     } else {
-                        total = responseOrder[0].countProduct * responseOrder[0].price
+                        total = orderCopy.basket[0].countProduct * orderCopy.basket[0].price
                     }
                     return {
-                        number: order.numberOrder,
-                        status: order.status === 'open' ? "Открытый" : "Закрытый",
-                        customer: order.dataUser.fullName,
-                        date: order.createdAt,
-                        delivery: order.shipping === 'transportCompany' ? "Транспортной компанией" : "Самовывоз",
+                        number: orderCopy.numberOrder,
+                        status: orderCopy.status === 'open' ? "Открытый" : "Закрытый",
+                        customer: orderCopy.dataUser.fullName,
+                        date: createdAt,
+                        delivery: orderCopy.shipping === 'transportCompany' ? "Транспортной компанией" : "Самовывоз",
                         total: total,
-                        email: order.dataUser.email
-                    }
-                })
-            }).catch(() => {
-                this.errors.emptyOrders = true;
-            });
-        },
-        created() {
-            UserService.getOrders(localStorage.getItem('token')).then(({data}) => {
-                this.errors.emptyOrders = false;
-                this.basket = data.orders;
-                this.orders = data.orders.map((order) => {
-                    let total = 0;
-                    if(order.basket.length > 1){
-                        total = order.basket.reduce((next, current)=>{
-                            return (current.price * current.countProduct) + (next.price * next.countProduct)
-                        })
-                    } else {
-                        total = order.basket[0].countProduct * order.basket[0].price
-                    }
-                    return {
-                        number: order.numberOrder,
-                        status: order.status === 'open' ? "Открытый" : "Закрытый",
-                        customer: order.dataUser.fullName,
-                        date: order.createdAt,
-                        delivery: order.shipping === 'transportCompany' ? "Транспортной компанией" : "Самовывоз",
-                        total: total,
-                        email: order.dataUser.email
+                        email: orderCopy.dataUser.email
                     }
                 })
             }).catch(() => {
@@ -143,8 +115,8 @@
             transitionOrder(number) {
                 this.$router.push(`/profile/orders/${number}`)
             },
-            reformateData(date){
-                const newFormateDate = + date.split('-')[2].split('T')[0] + '.' + date.split('-')[1] + '.' + date.split('-')[0];
+            reformateData(date) {
+                const newFormateDate = +date.split('-')[2].split('T')[0] + '.' + date.split('-')[1] + '.' + date.split('-')[0];
                 const newFormateTimes = date.split('-')[2].split('T')[1].split('.')[0];
                 return newFormateDate + ' ' + newFormateTimes
             }

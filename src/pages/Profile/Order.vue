@@ -1,64 +1,82 @@
 <template>
     <div class="order">
-        <div @click="()=>this.$router.go(-1)" :style="{display: 'flex', color: '#305496', marginBottom: '10px', cursor: 'pointer'}">
-            <v-icon color="#305496" left medium>mdi-arrow-left</v-icon>
-            <div>Назад</div>
+        <v-progress-circular
+                :style="{marginLeft: '400px', paddingTop: '500px!important', display: 'block'}"
+                class="ma-auto"
+                :size="70"
+                :width="7"
+                color="purple"
+                indeterminate
+                v-if="loading"
+        ></v-progress-circular>
+        <div v-else>
+            <div @click="()=>this.$router.go(-1)"
+                 :style="{display: 'flex', color: '#305496', marginBottom: '10px', cursor: 'pointer'}">
+                <v-icon color="#305496" left medium>mdi-arrow-left</v-icon>
+                <div>Назад</div>
+            </div>
+            <h2>ПОДРОБНОСТИ ЗАКАЗА</h2>
+            <hr>
+            <div :style="{margin:'10px 0'}"><strong>Номер заказа:</strong> {{Object.keys(order).length > 0 ?
+                order.numberOrder : ''}}
+            </div>
+            <div :style="{margin:'10px 0'}"><strong>Оформлен</strong> {{Object.keys(order).length > 0 ?
+                reformateData(order.basket[0].createdAt) : ''}}
+            </div>
+            <v-data-table
+                    :headers="headers"
+                    :items="order.basket"
+                    class="elevation-1"
+                    hide-default-footer
+            >
+                <template v-slot:item.title="{item}">
+                    <div :style="{color: '#305496', display: 'flex'}" @click="transitionOnProduct(item)">
+                        <img :style="{height:'120px'}" :src="item.image" alt="">
+                        <div :style="{padding: '10px 0 30px 20px'}">
+                            <span :style="{cursor: 'pointer'}">{{item.name}}</span>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:item.price="{item}">
+                    <div>
+                        {{item.price}} BYN
+                    </div>
+                </template>
+                <template v-slot:item.countProduct="{item}">
+                    <div>
+                        {{item.countProduct}}
+                    </div>
+                </template>
+                <template v-slot:item.total="{item}">
+                    <div>
+                        {{Number(item.price) * Number(item.countProduct)}} BYN
+                    </div>
+                </template>
+                <template v-slot:footer>
+                    <div :style="{ display:'flex', justifyContent: 'space-around', padding: '20px', backgroundColor:'#F2F2F2'}">
+                        <div :style="{ marginLeft: 'auto'}">
+                            Стоимость заказа: {{calcTotal()}} руб.
+                        </div>
+                        <div :style="{ margin: 'auto 30px'}">
+                            Вес: {{calcWeight()}} кг.
+                        </div>
+                    </div>
+                </template>
+            </v-data-table>
         </div>
-        <h2>ПОДРОБНОСТИ ЗАКАЗА</h2>
-        <hr>
-        <div :style="{margin:'10px 0'}"><strong>Номер заказа:</strong> {{order.numberOrder}}</div>
-        <div :style="{margin:'10px 0'}"><strong>Оформлен</strong> {{reformateData(order.basket[0].createdAt)}}
-        </div>
-        <v-data-table
-                :headers="headers"
-                :items="order.basket"
-                class="elevation-1"
-                hide-default-footer
-        >
-            <template v-slot:item.title="{item}">
-                <div :style="{color: '#305496', display: 'flex'}" @click="transitionOnProduct(item)">
-                    <img :style="{height:'120px'}" :src="item.image[0]" alt="">
-                    <div :style="{padding: '10px 0 30px 20px'}">
-                        <span :style="{cursor: 'pointer'}">{{item.name}}</span>
-                    </div>
-                </div>
-            </template>
-            <template v-slot:item.price="{item}">
-                <div>
-                    {{item.price}} BYN
-                </div>
-            </template>
-            <template v-slot:item.countProduct="{item}">
-                <div>
-                    {{item.countProduct}}
-                </div>
-            </template>
-            <template v-slot:item.total="{item}">
-                <div>
-                    {{Number(item.price) * Number(item.countProduct)}} BYN
-                </div>
-            </template>
-            <template v-slot:footer>
-                <div :style="{ display:'flex', justifyContent: 'space-around', padding: '20px', backgroundColor:'#F2F2F2'}">
-                    <div :style="{ marginLeft: 'auto'}">
-                        Стоимость заказа: {{calcTotal()}} руб.
-                    </div>
-                    <div :style="{ margin: 'auto 30px'}">
-                        Вес: {{calcWeight()}} кг.
-                    </div>
-                </div>
-            </template>
-        </v-data-table>
+
     </div>
 </template>
 
 <script>
-    import UserService from "../../services/user";
+    import OrderService from "../../services/order";
+    import ProductImagesService from "../../services/productImages";
 
     export default {
         name: 'ProfileOrder',
         data: () => ({
             order: {},
+            loading: true,
             headers: [
                 {
                     text: 'Товар',
@@ -87,10 +105,20 @@
             ]
         }),
         created() {
-            UserService.getOrders(localStorage.getItem('token')).then(({data}) => {
-                data.orders.forEach((order) => {
-                    if (order.numberOrder === this.$router.history.current.params.id) {
-                        this.order = order
+            OrderService.getOrders(localStorage.getItem('token')).then(({data}) => {
+                data.forEach(({order}) => {
+                    if (JSON.parse(order).numberOrder === this.$router.history.current.params.id) {
+                        let copyOrder = {...JSON.parse(order)};
+                        copyOrder.basket.forEach((product) => {
+                            return ProductImagesService.getProductImages(product.id).then(({data}) => {
+                                product.image = data[0].pathImage;
+                            })
+                        });
+                        console.log(JSON.parse(order));
+                        setTimeout(() => {
+                            this.order = copyOrder
+                            this.loading = false;
+                        }, 2500);
                     }
                 });
             }).catch(() => {
@@ -118,7 +146,7 @@
                 return weight.toFixed(2)
             },
             transitionOnProduct(product) {
-                this.$router.push(`/catalog/${product.group.split(' ').join('').toLowerCase()}/${product._id}`);
+                this.$router.push(`/catalog/${product.group.split(' ').join('').toLowerCase()}/${product.id}`);
             },
         }
     }
