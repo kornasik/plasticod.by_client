@@ -144,7 +144,7 @@
             calcTotal() {
                 let total = 0;
                 this.products.forEach((item) => {
-                    total = total + (item.countProduct * item.price)
+                    total = total + this.calcPriceProduct(item)
                 });
                 return total
             },
@@ -171,6 +171,15 @@
             },
             changeCount() {
                 localStorage.setItem('basket', JSON.stringify(this.products));
+            },
+            calcPriceProduct(product) {
+                if (product.priceBeforeTen || product.priceBeforeHundred) {
+                    if (product.countProduct <= 10) {
+                        return Number(product.priceBeforeTen.split(',')[0]) * product.countProduct
+                    }
+                    return Number(product.priceBeforeHundred.split(',')[0]) * product.countProduct
+                }
+                return 0;
             }
         },
         created() {
@@ -189,6 +198,8 @@
                     this.products = copyProducts;
                     this.loading = false
                 }, 1500)
+            } else {
+                this.loading = false
             }
         }
     }

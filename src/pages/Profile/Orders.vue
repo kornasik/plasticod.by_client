@@ -87,15 +87,14 @@
                 this.errors.emptyOrders = false;
                 this.orders = data.map(({order, createdAt}) => {
                     const orderCopy = JSON.parse(order);
-                    console.log(orderCopy)
                     this.basket = orderCopy.basket;
-                    let total = 20;
+                    let total = 0;
                     if (orderCopy.basket.length > 1) {
                         total = orderCopy.basket.reduce((next, current) => {
-                            return (current.price * current.countProduct) + (next.price * next.countProduct)
+                            return (current.countProduct < 10 ? current.priceBeforeTen : current.priceBeforeHundred * current.countProduct) + (next.countProduct < 10 ? next.priceBeforeTen : next.priceBeforeHundred * next.countProduct)
                         })
                     } else {
-                        total = orderCopy.basket[0].countProduct * orderCopy.basket[0].price
+                        total = orderCopy.basket[0].countProduct * orderCopy.basket[0].countProduct < 10 ? orderCopy.basket[0].priceBeforeTen : orderCopy.basket[0].priceBeforeHundred
                     }
                     return {
                         number: orderCopy.numberOrder,

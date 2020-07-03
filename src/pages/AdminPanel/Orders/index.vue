@@ -5,13 +5,6 @@
                 <v-card>
                     <v-toolbar color="#00B0F0" dark>
                         <v-toolbar-title>Управление заказами</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <div class="my-2">
-                            <v-btn small color="green" @click="save">
-                                <v-icon size="small" class="mr-2">fas fa-check</v-icon>
-                                Сохранить
-                            </v-btn>
-                        </div>
                     </v-toolbar>
                 </v-card>
                 <div class="main">
@@ -33,9 +26,9 @@
                         </template>
                         <template v-slot:item.status="{item}">
                             <div>
-                                <select name="status" @change="handleStatus($event, item.id)">
-                                    <option value="open" :selected="item.status === 'Открытый'" >Открытый</option>
-                                    <option value="close" :selected="item.status === 'Закрытый'" >Закрытый</option>
+                                <select name="status" @change="handleStatus($event, item)">
+                                    <option value="open" :selected="item.status === 'Открытый'">Открытый</option>
+                                    <option value="close" :selected="item.status === 'Закрытый'">Закрытый</option>
                                 </select>
                             </div>
                         </template>
@@ -46,8 +39,8 @@
                         </template>
                         <template v-slot:item.customer="{item}">
                             <div>
-                                {{item.customer}}
-                                <p>{{item.email}}</p>
+                                ФИО: {{item.customer}}
+                                <p>E-mail: {{item.email}}</p>
                             </div>
                         </template>
                         <template v-slot:item.date="{item}">
@@ -69,7 +62,7 @@
                         :right="true"
                         :top="true"
                 >
-                    Данные сохранены
+                    Запись обновлена!
                     <v-btn
                             dark
                             text
@@ -84,8 +77,7 @@
 </template>
 
 <script>
-    import UserService from "../../../services/user";
-    import axios from 'axios';
+    import OrderService from "../../../services/order";
 
     export default {
         name: 'Orders',
@@ -118,34 +110,28 @@
             ],
         }),
         created() {
-            UserService.getAllUsers().then(({data}) => {
-                this.allUsers = [...data.users];
-                let listOrders = [];
-                data.users.forEach((user) => {
-                    if (user.orders.length > 0) {
-                        listOrders.push(...user.orders)
-                    }
-                });
-                this.orders = listOrders.map((order) => {
+            OrderService.getAllOrders().then(({data}) => {
+                this.orders = data.map(({order, createdAt}) => {
+                    const orderCopy = JSON.parse(order);
+                    this.basket = orderCopy.basket;
                     let total = 0;
-                    if(order.basket.length > 1){
-                        total = order.basket.reduce((next, current)=>{
-                            return (current.price * current.countProduct) + (next.price * next.countProduct)
+                    if (orderCopy.basket.length > 1) {
+                        total = orderCopy.basket.reduce((next, current) => {
+                            return (current.countProduct < 10 ? current.priceBeforeTen : current.priceBeforeHundred * current.countProduct) + (next.countProduct < 10 ? next.priceBeforeTen : next.priceBeforeHundred * next.countProduct)
                         })
                     } else {
-                        total = order.basket[0].countProduct * order.basket[0].price
+                        total = orderCopy.basket[0].countProduct * orderCopy.basket[0].countProduct < 10 ? orderCopy.basket[0].priceBeforeTen : orderCopy.basket[0].priceBeforeHundred
                     }
                     return {
-                        number: order.numberOrder,
-                        status: order.status === 'open' ? "Открытый" : "Закрытый",
-                        customer: order.dataUser.fullName,
-                        delivery: order.shipping === 'transportCompany' ? "Транспортной компанией" : "Самовывоз",
-                        date: order.createdAt,
+                        number: orderCopy.numberOrder,
+                        status: orderCopy.status === 'open' ? "Открытый" : "Закрытый",
+                        customer: orderCopy.dataUser.fullName,
+                        date: createdAt,
+                        delivery: orderCopy.shipping === 'transportCompany' ? "Транспортной компанией" : "Самовывоз",
                         total: total,
-                        email: order.dataUser.email,
-                        id: order.id
+                        email: orderCopy.dataUser.email
                     }
-                });
+                })
                 this.orders.reverse();
             })
         },
@@ -158,21 +144,27 @@
                 const newFormateTimes = date.split('-')[2].split('T')[1].split('.')[0];
                 return newFormateDate + ' ' + newFormateTimes
             },
-            handleStatus(event, id){
-                console.log(event.target.value, id);
-                this.allUsers.forEach((user)=>{
-                    user.orders.forEach((order)=>{
-                        if(order.id === id){
-                            order.status = event.target.value
-                        }
+            async handleStatus(event, item) {
+                let order = {};
+                await OrderService.getAllOrders().then(({data}) => {
+                    const index = data.findIndex((order) => {
+                        return order.id === item.id
+                    });
+                    order = {...data[index]};
+                    return {...data[index]};
+                }).then(({order, token}) => {
+                    const parseOrder = JSON.parse(order);
+                    if (event.target.value === 'open') {
+                        parseOrder.status = 'open'
+                    } else {
+                        parseOrder.status = 'close'
+                    }
+                    OrderService.updateOrder(JSON.stringify(parseOrder), token).then(() => {
+                        this.snackbar = true;
                     })
                 });
-            },
-            save(){
-                axios.post('http://localhost:5000/api/user/update-orders', {
-                    users: this.allUsers
-                })
-                this.snackbar = true;
+                console.log(order)
+
             }
         }
     }

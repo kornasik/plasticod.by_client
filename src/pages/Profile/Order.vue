@@ -49,7 +49,7 @@
                 </template>
                 <template v-slot:item.total="{item}">
                     <div>
-                        {{Number(item.price) * Number(item.countProduct)}} BYN
+                        {{Number(calcPriceOneProduct(item)) * Number(item.countProduct)}} BYN
                     </div>
                 </template>
                 <template v-slot:footer>
@@ -114,7 +114,6 @@
                                 product.image = data[0].pathImage;
                             })
                         });
-                        console.log(JSON.parse(order));
                         setTimeout(() => {
                             this.order = copyOrder
                             this.loading = false;
@@ -134,7 +133,7 @@
             calcTotal() {
                 let total = 0;
                 this.order.basket.forEach((item) => {
-                    total = total + (item.countProduct * item.price)
+                    total = total + this.calcPriceProduct(item)
                 });
                 return total
             },
@@ -147,6 +146,18 @@
             },
             transitionOnProduct(product) {
                 this.$router.push(`/catalog/${product.group.split(' ').join('').toLowerCase()}/${product.id}`);
+            },
+            calcPriceOneProduct(item){
+                return item.countProduct < 10 ? item.priceBeforeTen : item.priceBeforeHundred
+            },
+            calcPriceProduct(product) {
+                if (product.priceBeforeTen || product.priceBeforeHundred) {
+                    if (product.countProduct <= 10) {
+                        return Number(product.priceBeforeTen.split(',')[0]) * product.countProduct
+                    }
+                    return Number(product.priceBeforeHundred.split(',')[0]) * product.countProduct
+                }
+                return 0;
             },
         }
     }

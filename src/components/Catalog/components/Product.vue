@@ -185,7 +185,6 @@
                     }
                     let obj = Object.assign({}, this.product);
                     obj.countProduct = this.countProduct;
-                    obj.price = this.calcPrice;
                     const idProduct = basket.findIndex((element) => {
                         return element.id === obj.id
                     });
@@ -194,6 +193,7 @@
                     } else {
                         basket.push(obj);
                     }
+                    debugger
                     localStorage.setItem('basket', JSON.stringify(basket));
                     this.snackbar = true;
                     setTimeout(() => {

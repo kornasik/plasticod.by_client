@@ -453,12 +453,19 @@
                     }, 3000);
                 }
                 GeneralService.getGeneral().then(({data}) => {
-                    axios.post('http://localhost:5000/service/post-mail', {
+                    axios.post('http://plasticod.by/service/post-mail', {
                         ...this.valueFields,
                         ...this.addressShipping,
                         shipping: this.shipping,
                         numberOrder: data[0].numberOrder
+                    }, {
+                        headers: {
+                            "Access-Control-Allow-Origin": '*',
+                            "Access-Control-Allow-Methods": '*',
+                            "Access-Control-Allow-Headers": 'Origin, X-Requested-With, Content-Type, Accept'
+                        }
                     })
+                    GeneralService.updateGeneral({numberOrder: String(Number(data[0].numberOrder) + 1)})
                 })
             }
         }

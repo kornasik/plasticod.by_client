@@ -16,6 +16,16 @@ class OrderService {
             token
         })
     }
+
+    static getAllOrders() {
+        return axios.get(`${url}/all-orders`)
+    }
+
+    static updateOrder(order, token) {
+        return axios.post(`${url}/update`, {
+            order, token
+        })
+    }
 }
 
 export default OrderService;
