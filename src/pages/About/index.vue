@@ -1,6 +1,8 @@
 <template>
     <div class="about">
-        {{text ? text : defaultText}}
+        <div style="text-indent: 35px; word-wrap: break-word;white-space: break-spaces">
+            {{text ? text : defaultText}}
+        </div>
     </div>
 </template>
 
@@ -15,8 +17,17 @@
         }),
         created() {
             AboutService.getAbout().then(({data}) => {
-                this.text = data[0].text;
+                this.text = data[0].text
+                const a = this.text.split('↵');
+                console.log(a)
             })
+        },
+        methods: {
+            b64DecodeUnicode(str) {
+                return decodeURIComponent(atob(str).split('').map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+            }
         }
     }
 
