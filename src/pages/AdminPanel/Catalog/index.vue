@@ -6,6 +6,13 @@
                     <v-toolbar color="#00B0F0" dark>
                         <v-toolbar-title>Каталог</v-toolbar-title>
                         <v-spacer></v-spacer>
+                        <v-text-field
+                                flat
+                                v-model="searchCode"
+                                hide-details
+                                label="Поиск по коду товара"
+                                solo-inverted
+                        ></v-text-field>
                         <div class="my-2">
                             <v-dialog v-model="isModalAddGroup" persistent max-width="800">
                                 <template v-slot:activator="{ on }">
@@ -166,6 +173,8 @@
             Images
         },
         data: () => ({
+            searchCode: '',
+            copyProducts: [],
             products: [],
             isModalAddGroup: false,
             groups: [],
@@ -182,6 +191,13 @@
             },
             images: []
         }),
+        watch: {
+            searchCode(value){
+              this.products = this.copyProducts.filter((product)=>{
+                  return product.code.indexOf(value) >= 0
+              })
+          }
+        },
         methods: {
             deleteProduct(id) {
                 PostService.deleteProducts(id);
@@ -229,14 +245,16 @@
                                 let productCopy = {...product};
                                 productCopy.image = images.data[0].pathImage;
                                 this.products.push(productCopy);
+                                this.copyProducts.push(productCopy)
                             } else {
                                 let productCopy = {...product};
                                 productCopy.image = '';
                                 this.products.push(productCopy)
+                                this.copyProducts.push(productCopy)
                             }
                         });
                     })
-                });
+                })
             },
             getGroups() {
                 GroupsService.getGroups().then((groups) => {
@@ -298,7 +316,7 @@
                             GroupImagesService.insertImagesGroup({
                                 groupId: this.tempIDGroup,
                                 pathImage: e.target.result
-                            }).then(()=>{
+                            }).then(() => {
                                 this.snackbarText = "Изоражение добавлено!";
                                 this.snackbar = true;
                             })
@@ -330,7 +348,7 @@
             emitDeleteImage({id}) {
                 console.log(id)
                 GroupImagesService.deleteGroupImage(id)
-                this.images = this.images.filter((image)=>{
+                this.images = this.images.filter((image) => {
                     return !(image.id === id)
                 })
             }

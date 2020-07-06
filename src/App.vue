@@ -28,9 +28,10 @@
     }
 
     div.content > div:nth-child(2){
-        min-height: 512px;
+        min-height: calc(100vh - 285px - 200px);
         border-right: 1px solid #000080;
         border-left: 1px solid #000080;
+        padding-bottom: 30px;
     }
 
     button,

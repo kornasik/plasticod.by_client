@@ -3,10 +3,10 @@
         <div class="footer__logo">PLASTIC<br>Organizers<br>with<br>Drawers</div>
         <div class="footer__contacts">
             <div class="footer__contacts__messengers">
-                <a :href="`http://${$store.state.General.socials.skype}`"><img class="footer__contacts__messengers__image" src="../../assets/skype.png" alt="skype"></a>
-                <a :href="`http://${$store.state.General.socials.viber}`"><img class="footer__contacts__messengers__image" src="../../assets/viber.png" alt="viber"></a>
-                <a :href="`http://${$store.state.General.socials.whatsapp}`"><img class="footer__contacts__messengers__image" src="../../assets/whatsapp.png" alt="whatsapp"></a>
-                <a :href="`http://${$store.state.General.socials.telegram}`"><img class="footer__contacts__messengers__image" src="../../assets/telegram.png" alt="telegram"></a>
+                <a :href="`skype:${$store.state.General.socials.skype}?chat`"><img class="footer__contacts__messengers__image" src="../../assets/skype.png" alt="skype"></a>
+                <a :href="`viber://chat?number=${$store.state.General.socials.viber}`"><img class="footer__contacts__messengers__image" src="../../assets/viber.png" alt="viber"></a>
+                <a :href="`whatsapp://send?phone=${$store.state.General.socials.whatsapp}`"><img class="footer__contacts__messengers__image" src="../../assets/whatsapp.png" alt="whatsapp"></a>
+                <a :href="`tg://resolve?domain=${$store.state.General.socials.telegram}`"><img class="footer__contacts__messengers__image" src="../../assets/telegram.png" alt="telegram"></a>
                 <span class="footer__contacts__messengers__number">{{$store.state.General.numberPhone}};</span>
             </div>
             <div class="footer__contacts__text">

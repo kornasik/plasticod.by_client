@@ -121,8 +121,6 @@
     }
 
     .shipping-and-payment__about-company__logo img{
-        width: 150px;
-        height: 100px;
         margin-right: 20px;
     }
 

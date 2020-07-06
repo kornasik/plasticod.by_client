@@ -55,7 +55,7 @@
         </div>
         <div class="header__contacts">
             <div class="header__contacts__left-part">
-                <h1>Пластиковые органайзеры<br> с выдвижными ячейками</h1>
+                <h1 :style="{width: '630px'}">Пластиковые органайзеры с выдвижными ячейками</h1>
                 <h3>оптовые продажи {{$store.state.General.numberPhone}}; info@plasticod.by</h3>
             </div>
             <div class="header__contacts__right-part">
@@ -183,6 +183,7 @@
         justify-content: space-between;
         border-left: 1px solid #000080;
         border-right: 1px solid #000080;
+        height: 200px
     }
 
     .header__contacts__left-part {
@@ -191,18 +192,18 @@
     }
 
     .header__contacts__left-part h1 {
-        text-align: center;
+        line-height: 60px;
         font-size: 47px;
         color: #0070C0;
         position: relative;
-        top: 17px;
+        top: -3px;
     }
 
     .header__contacts__left-part h3 {
         font-size: 22px;
         color: #00B0F0;
         position: relative;
-        top: 3px;
+        top: 5px;
     }
 
     .header__contacts__right-part {
@@ -211,10 +212,10 @@
 
     .header__contacts__right-part__logo {
         text-align: center;
-        font-size: 25px;
+        font-size: 30px;
         font-weight: bold;
         color: #036BCF;
-        line-height: 26px;
+        line-height: 30px;
         padding: 4px;
         border: 5px solid #036BCF;
     }
@@ -270,7 +271,6 @@
     }
 
     .carousel-img{
-        width: 100%;
         height: 100%;
         margin: 0 auto;
         display: block;

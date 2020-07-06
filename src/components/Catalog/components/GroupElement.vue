@@ -100,7 +100,7 @@
     .group-element__products__product {
         display: flex;
         flex-direction: column;
-        height: fit-content;
+        height: 280px;
         width: 33%;
         border: 2px solid black;
         text-align: center;
@@ -110,6 +110,11 @@
 
     .group-element__products__product__image img {
         width: 250px
+    }
+
+    .group-element__products__product__image {
+        margin: auto 0;
+        display: block;
     }
 
 </style>

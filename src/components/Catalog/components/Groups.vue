@@ -29,8 +29,11 @@
             }
         },
         created() {
+            console.log(this.group.id)
             GroupImagesService.getAllGroupsImages().then(({data}) => {
-                this.images = data;
+                this.images = data.filter((image)=>{
+                    return image.groupId === this.group.id
+                });
             })
         }
     }
