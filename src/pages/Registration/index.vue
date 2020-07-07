@@ -33,6 +33,7 @@
                                 transition="scale-transition"
                                 offset-y
                                 min-width="100px"
+                                locale="ru"
                         >
                             <template v-slot:activator="{ on }">
                                 <v-text-field
@@ -42,7 +43,7 @@
                                         v-on="on"
                                 ></v-text-field>
                             </template>
-                            <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
+                            <v-date-picker v-model="date" @input="menu2 = false" locale="ru"></v-date-picker>
                         </v-menu>
                         <v-text-field v-model="valueFields.whoIssued" label="Кем выдано"></v-text-field>
                         <v-text-field v-model="valueFields.paymentAccount" label="Расчётный счёт"></v-text-field>
