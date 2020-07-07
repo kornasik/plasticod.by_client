@@ -83,8 +83,8 @@
                 <div class="product-detail__information__code-compatibility item">
                     <div class="product-detail__text">Стыкуется с кодами:</div>
                     <div :style="{display: 'flex', flexDirection: 'column'}">
-                        <div class="product-detail__value">
-                            {{product.codeCompatibility}}
+                        <div class="product-detail__value" v-for="code in product.codeCompatibility.split(';')" :key="code">
+                            <div>{{code}}</div>
                         </div>
                     </div>
                 </div>
@@ -193,7 +193,6 @@
                     } else {
                         basket.push(obj);
                     }
-                    debugger
                     localStorage.setItem('basket', JSON.stringify(basket));
                     this.snackbar = true;
                     setTimeout(() => {
@@ -206,15 +205,15 @@
             },
             showLightboxMain: function (imageName) {
                 this.$refs.lightboxMain.show(imageName);
-            },
+            }
         },
         computed: {
             calcPrice() {
                 if (this.product.priceBeforeTen || this.product.priceBeforeHundred) {
                     if (this.countProduct <= 10) {
-                        return Number(this.product.priceBeforeTen.split(',')[0]) * this.countProduct
+                        return (Number(this.product.priceBeforeTen.split(',')[0]) * this.countProduct).toFixed(2)
                     }
-                    return Number(this.product.priceBeforeHundred.split(',')[0]) * this.countProduct
+                    return (Number(this.product.priceBeforeHundred.split(',')[0]) * this.countProduct).toFixed(2)
                 }
                 return 0;
             }
@@ -404,6 +403,9 @@
     }
 
     @media print {
+        *{
+            border: none;
+        }
         .product-detail__count {
             display: none;
         }
@@ -420,9 +422,18 @@
             display: none;
         }
 
+        .product-detail {
+            border: none;
+        }
+
         .product {
             border-left: none;
             border-right: none;
+        }
+
+
+        .product-detail__image__main img{
+            border: none;
         }
     }
 </style>

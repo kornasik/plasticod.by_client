@@ -63,5 +63,9 @@
         body > .footer{
             display: none;
         }
+
+        div.content > div:nth-child(2) {
+            border: none
+        }
     }
 </style>

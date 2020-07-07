@@ -29,7 +29,6 @@
             }
         },
         created() {
-            console.log(this.group.id)
             GroupImagesService.getAllGroupsImages().then(({data}) => {
                 this.images = data.filter((image)=>{
                     return image.groupId === this.group.id
@@ -47,6 +46,9 @@
         color: white;
         border-bottom: 2px solid black;
         cursor: pointer;
+    }
+    .groups__header:hover {
+        background-color: #0070C0;
     }
 
     .groups__header__title {

@@ -58,7 +58,7 @@
                 this.selectProductsForGroup(data);
                 setTimeout(() => {
                     this.loading = false;
-                }, 1500)
+                }, 2500)
             })
         },
         methods: {

@@ -18,9 +18,9 @@
                 <v-text-field v-model="product.volumeOneBox" label="Объем одного ящика см.3"></v-text-field>
                 <v-text-field v-model="product.volumeAllBox" label="Объем всех ящиков см.3"></v-text-field>
                 <v-text-field v-model="product.weight" label="Вес, кг."></v-text-field>
-                <v-text-field v-model="product.codeCompatibility" label="Стыкуется с кодами:"></v-text-field>
-                <v-text-field v-model="product.priceBeforeTen" label="1-10 шт."></v-text-field>
-                <v-text-field v-model="product.priceBeforeHundred" label="11-100 шт."></v-text-field>
+                <v-text-field v-model="product.codeCompatibility" label="Стыкуется с кодами:  (вводить через ;)"></v-text-field>
+                <v-text-field v-model="product.priceBeforeTen" label="1-10 шт. (вводить через точку)" @change="priceBeforeTen"></v-text-field>
+                <v-text-field v-model="product.priceBeforeHundred" label="11-100 шт. (вводить через точку)" @change="priceBeforeHundred"></v-text-field>
                 <v-text-field v-model="product.priceAfterHundred" label="от 100 шт."></v-text-field>
                 <v-btn text small @click="editProduct">Редактировать</v-btn>
             </div>
@@ -104,6 +104,12 @@
             this.getImages();
         },
         methods: {
+            priceBeforeTen(value){
+                this.product.priceBeforeTen = value.replace(",", ".")
+            },
+            priceBeforeHundred(value){
+                this.product.priceBeforeHundred = value.replace(",", ".")
+            },
             editProduct() {
                 PostService.updateProduct(this.product).then(() => {
                     this.$router.go(-1);
