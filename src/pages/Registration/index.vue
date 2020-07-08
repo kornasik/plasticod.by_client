@@ -113,13 +113,17 @@
                         работы с сайтом
                         и для других целей, описанных в нашей политика конфиденциальности
                     </div>
-                    <v-checkbox
-                            :style="{margin: '10px 0 0 20px'}"
-                            v-model="iAgree"
-                            label="Я прочитал (-а) и соглашаюсь с политикой конфиденциальности"
-                            required
-                            :error="errors.iAgree"
-                    ></v-checkbox>
+                    <div :style="{display: 'flex'}">
+                        <v-checkbox
+                                :style="{margin: '16px 0 0 20px'}"
+                                v-model="iAgree"
+                                required
+                                :error="errors.iAgree"
+                        ></v-checkbox>
+                        <div :style="{display: 'flex', flexDirection: 'column', justifyContent: 'center'}">
+                            <a href="/privacy-policy">Я прочитал (-а) и соглашаюсь с политикой конфиденциальности</a>
+                        </div>
+                    </div>
 
                     <div class="button" @click="registrationUser">
                         Регистрация

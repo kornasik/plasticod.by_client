@@ -4,16 +4,20 @@
         реквизитов для оплаты.<br><br>
         Ваши персональные данные будут использоваться для обработки ваших заказов, упрощения вашей работы с сайтом и для
         других целей, описанных в нашей политика конфиденциальности.<br><br>
+        <div :style="{display: 'flex'}">
+            <v-checkbox
+                    v-model="checkbox"
+                    value="1"
+                    type="checkbox"
+                    :error="error.checkbox"
+                    :style="{width: 'fit-content'}"
+                    required
+            ></v-checkbox>
+            <div :style="{display: 'flex', flexDirection: 'column', justifyContent: 'center'}">
+                <a href="/privacy-policy">Я прочитал (-а) и соглашаюсь с политикой конфиденциальности</a>
+            </div>
+        </div>
 
-        <v-checkbox
-                v-model="checkbox"
-                value="1"
-                label="Я прочитал (-а) и соглашаюсь с политикой конфиденциальности"
-                type="checkbox"
-                :error="error.checkbox"
-                :style="{width: 'fit-content'}"
-                required
-        ></v-checkbox>
         <Button :text-button="'Подтвердить заказ'" :width="'210px'" @click="sendOrder"/>
     </div>
 </template>

@@ -49,12 +49,12 @@
                         href: '/admin/example-using',
                         title: 'Примеры использования',
                         icon: 'fa fa-images'
-                    },/*
+                    },
                     {
                         href: '/admin/address-shipping',
                         title: 'Условия доставки и оплаты',
                         icon: 'fa fa-truck'
-                    },*/
+                    },
                     {
                         href: '/admin/news',
                         title: 'Новости',
@@ -74,6 +74,11 @@
                         href: '/admin/orders',
                         title: 'Управление заказами',
                         icon: 'fa fa-clipboard-list'
+                    },
+                    {
+                        href: '/admin/privacy-policy',
+                        title: 'Политика конфиденциальности',
+                        icon: 'fa fa-landmark'
                     }
                 ]
             }

@@ -10,7 +10,7 @@
                 <span class="footer__contacts__messengers__number">{{$store.state.General.numberPhone}};</span>
             </div>
             <div class="footer__contacts__text">
-                Политика конфиденциальности<br>
+                <a href="/privacy-policy">Политика конфиденциальности</a><br>
                 Следите за нами в социальных сетях:
             </div>
             <div class="footer__contacts__socials">

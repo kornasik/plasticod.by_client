@@ -21,6 +21,7 @@ import AdminPanelAddProduct from '../pages/AdminPanel/Catalog/AddProduct';
 import AdminPanelEditProduct from '../pages/AdminPanel/Catalog/EditProduct';
 import AdminPanelNews from '../pages/AdminPanel/News/index';
 import AdminPanelAddNews from '../pages/AdminPanel/News/AddNews';
+import AdminPrivacyPolicy from '../pages/AdminPanel/PrivacyPolicy';
 import AdminPanelEditNews from '../pages/AdminPanel/News/EditNews';
 import Registration from '../pages/Registration';
 import Profile from '../pages/Profile';
@@ -235,6 +236,11 @@ export const router = new VueRouter({
                     path: 'orders/:id',
                     name: 'order',
                     component: AdminPanelOrder
+                },
+                {
+                    path: 'privacy-policy',
+                    name: 'privacy-policy',
+                    component: AdminPrivacyPolicy
                 }
             ]
         }
