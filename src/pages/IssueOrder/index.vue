@@ -83,6 +83,7 @@
                                     <v-date-picker
                                             v-model="date"
                                             @input="menu2 = false"
+                                            locale="ru"
                                     />
                                 </v-menu>
                                 <v-text-field
@@ -112,7 +113,8 @@
                                         v-model="valueFields.phoneNumber"
                                         label="Телефон (Пример: (029) 1111111) *"
                                         :error="errors.phoneNumber"
-                                        :messages="errors.phoneNumber ? 'Поле не заполнено' : ''"
+                                        type="number"
+                                        :messages="errors.phoneNumber ? 'Слишком короткий телефон' : ''"
                                 />
                             </v-app>
                         </div>
@@ -124,7 +126,7 @@
                             this.valueFields.email ? this.errors.email = false : this.errors.email = true
                             this.valueFields.unp ? this.errors.unp = false : this.errors.unp = true
                             this.valueFields.fullName ? this.errors.fullName = false : this.errors.fullName = true
-                            this.valueFields.phoneNumber ? this.errors.phoneNumber = false : this.errors.phoneNumber = true
+                            this.valueFields.phoneNumber.length > 10 ? this.errors.phoneNumber = false : this.errors.phoneNumber = true
 
                             if(
                                 this.valueFields.nameCompany &&
@@ -134,7 +136,7 @@
                                 this.valueFields.email &&
                                 this.valueFields.unp &&
                                 this.valueFields.fullName &&
-                                this.valueFields.phoneNumber
+                                this.valueFields.phoneNumber.length > 10
                             ){
 
                             this.activeStep = [2]
@@ -412,10 +414,10 @@
                 this.activeStep = [4];
             },
             sendOrder() {
+                const dataUser = {...this.valueFields, ...this.addressShipping};
+                const basket = JSON.parse(localStorage.getItem('basket'));
+                const token = localStorage.getItem('token');
                 if (localStorage.getItem('token')) {
-                    const dataUser = {...this.valueFields, ...this.addressShipping};
-                    const basket = JSON.parse(localStorage.getItem('basket'));
-                    const token = localStorage.getItem('token');
                     GeneralService.getGeneral().then(({data}) => {
                         OrderService.addOrder(token, {
                             dataUser: dataUser,
@@ -445,6 +447,20 @@
                         })
                     }, 3000)
                 } else {
+                    GeneralService.getGeneral().then(({data}) => {
+                        OrderService.addOrder('anonymous', {
+                            dataUser: dataUser,
+                            basket: basket,
+                            shipping: this.shipping,
+                            status: "open",
+                            numberOrder: data[0].numberOrder
+                        });
+                        return data
+                    }).then((response) => {
+                        GeneralService.updateGeneral({
+                            numberOrder: String(Number(response[0].numberOrder) + 1)
+                        })
+                    });
                     this.snackbar = true;
                     localStorage.removeItem('basket');
                     setTimeout(() => {

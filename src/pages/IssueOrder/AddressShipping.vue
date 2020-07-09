@@ -3,8 +3,8 @@
         <div>
             <v-col class="d-flex flex-column" cols="12" sm="6">
                 <v-select
-                        :items="countrys"
-                        v-model="address.country"
+                        :items="countries"
+                        v-model="country"
                         filled
                         label="Страна"
                 ></v-select>
@@ -70,11 +70,12 @@
           }
         },
         data: () => ({
-            countrys: [
+            countries: [
                 "Беларусь"
             ],
+            country: 'Беларусь',
             address: {
-                country: "Беларусь",
+                country: 'Беларусь',
                 region: '',
                 city: '',
                 street: '',

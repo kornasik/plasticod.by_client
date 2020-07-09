@@ -24,8 +24,11 @@
                                 <img :style="{height:'110px', padding: '5px 0'}" :src="item.image" alt="">
                                 <div :style="{padding: '10px 0 30px 20px'}">
                                 <span @click="transitionOnProduct(item)"
-                                      :style="{cursor: 'pointer'}">{{item.name}}</span>
-                                    <div :style="{padding: '30px 0 0 0', cursor: 'pointer'}" @click="deleteProduct(item)">
+                                      :style="{cursor: 'pointer'}">{{item.name}}
+                                </span>
+                                    <div :style="{padding: '10px 0 0 0'}">Код: {{item.code}}</div>
+                                    <div :style="{padding: '20px 0 0 0', cursor: 'pointer'}"
+                                         @click="deleteProduct(item)">
                                         Удалить товар
                                         <v-icon color="black">mdi-delete</v-icon>
                                     </div>
@@ -44,7 +47,7 @@
                         </template>
                         <template v-slot:item.total="{item}">
                             <div>
-                                {{Number(calcPrice(item).split(',')[0]) * Number(item.countProduct)}} BYN
+                                {{(Number(calcPrice(item).split(',')[0]) * Number(item.countProduct)).toFixed(2)}} BYN
                             </div>
                         </template>
                         <template v-slot:item.weight="{item}">
@@ -55,7 +58,7 @@
                         <template v-slot:footer>
                             <div :style="{ display:'flex', justifyContent: 'space-around', padding: '20px', backgroundColor:'#F2F2F2'}">
                                 <div :style="{ marginLeft: 'auto'}">
-                                    Стоимость Вашего заказа: {{calcTotal()}} руб.
+                                    Стоимость Вашего заказа: {{(calcTotal()).toFixed(2)}} руб.
                                 </div>
                                 <div :style="{ margin: 'auto 30px'}">
                                     Вес: {{calcWeight()}} кг.
@@ -64,7 +67,8 @@
                         </template>
                     </v-data-table>
                 </div>
-                <Button @click="$router.push('/issue-order')" :width="'200px'" :style="{margin: '20px 20px 20px auto'}"/>
+                <Button @click="$router.push('/issue-order')" :width="'200px'"
+                        :style="{margin: '20px 20px 20px auto'}"/>
             </div>
         </div>
         <v-progress-circular
@@ -170,7 +174,16 @@
                 }
             },
             changeCount() {
-                localStorage.setItem('basket', JSON.stringify(this.products));
+                const copyProducts = this.products.filter((product) => {
+                    return product.countProduct > 0
+                })
+                if (copyProducts.length === 0) {
+                    localStorage.removeItem('basket');
+                    this.products = []
+                    this.emptyBasket = true;
+                } else {
+                    localStorage.setItem('basket', JSON.stringify(copyProducts));
+                }
             },
             calcPriceProduct(product) {
                 if (product.priceBeforeTen || product.priceBeforeHundred) {
@@ -194,7 +207,7 @@
                     });
                     return product
                 });
-                setTimeout(()=>{
+                setTimeout(() => {
                     this.products = copyProducts;
                     this.loading = false
                 }, 1500)
@@ -225,7 +238,18 @@
 
     input {
         outline: none;
-        width: 30px;
+        width: 50px;
         text-align: center;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        height: 30px;
+        width: 30px;
+        padding: 2px
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
     }
 </style>

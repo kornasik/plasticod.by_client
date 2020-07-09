@@ -148,7 +148,7 @@
                 let order = {};
                 await OrderService.getAllOrders().then(({data}) => {
                     const index = data.findIndex((order) => {
-                        return order.id === item.id
+                        return JSON.parse(order.order).numberOrder === item.number
                     });
                     order = {...data[index]};
                     return {...data[index]};

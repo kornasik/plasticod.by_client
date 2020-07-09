@@ -8,7 +8,7 @@
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                     <v-app>
-                        <v-text-field v-model="valueFields.email" label="E-mail *" :rules="[rules.required]"
+                        <v-text-field v-model="valueFields.email" label="E-mail *" :rules="[rules.required, rules.email]"
                                       :error="errors.email"></v-text-field>
                         <v-text-field v-model="password" label="Пароль *" :type="'password'" :rules="[rules.required]"
                                       :error="errors.password"></v-text-field>
@@ -53,7 +53,7 @@
                         <v-text-field v-model="valueFields.fullName" label="Ф.И.О. контактного лица *"
                                       :rules="[rules.required]" :error="errors.fio"></v-text-field>
                         <v-text-field v-model="valueFields.phoneNumber"
-                                      label="Телефон (Пример: (029) 1111111) *" :rules="[rules.required]"
+                                      label="Телефон (Пример: (029) 1111111) *" :rules="[rules.phone]"
                                       :error="errors.phoneNumber"></v-text-field>
                     </v-app>
                 </v-expansion-panel-content>
@@ -165,54 +165,7 @@
                 phoneNumber: ''
             },
             countrys: [
-                "Австрия",
-                "Андорра",
-                "Албания",
-                "Беларусь",
-                "Бельгия",
-                "Болгария",
-                "Босния и Герцеговина",
-                "Ватикан",
-                "Великобритания",
-                "Венгрия",
-                "Германия",
-                "Гибралтар",
-                "Греция",
-                "Дания",
-                "Ирландия",
-                "Исландия",
-                "Испания",
-                "Италия",
-                "Латвия",
-                "Литва",
-                "Лихтенштейн",
-                "Люксембург",
-                "Македония",
-                "Мальта",
-                "Молдавия",
-                "Монако",
-                "Нидерланды",
-                "Норвегия",
-                "Польша",
-                "Португалия",
-                "Россия",
-                "Румыния",
-                "Сан - Марино",
-                "Сербия и Черногория",
-                "Словакия",
-                "Словения",
-                "Украина",
-                "Фарерские острова",
-                "Финляндия",
-                "Франция",
-                "Хорватия",
-                "Черногория",
-                "Чехия",
-                "Швейцария",
-                "Швеция",
-                "Шпицберген",
-                "Норвегия",
-                "Эстония"
+                "Беларусь"
             ],
             address: {
                 country: 'Беларусь',
@@ -225,7 +178,12 @@
                 comment: ''
             },
             rules: {
-                required: value => !!value || 'Required.'
+                required: value => !!value || 'Required.',
+                phone: value => value.length > 10 || 'Слишком короткий телефон',
+                email: value => {
+                    const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                    return pattern.test(value) || 'Invalid e-mail.'
+                },
             },
             errors: {
                 email: false,
