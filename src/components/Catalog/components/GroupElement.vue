@@ -109,7 +109,7 @@
     }
 
     .group-element__products__product__image img {
-        width: 250px
+        max-height: 190px;
     }
 
     .group-element__products__product__image {

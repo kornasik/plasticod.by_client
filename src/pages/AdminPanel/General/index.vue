@@ -40,7 +40,7 @@
                     </div>
                     <hr>
                     <h4 style="color: navy">Skype - имя пользвателя</h4>
-                    <h4 style="color: navy">Viber, Telegram, WhatsApp, Telegram - номера телефонов</h4>
+                    <h4 style="color: navy">Viber, Telegram, WhatsApp - номера телефонов</h4>
                     <h4 style="color: navy">Vk, Instagram, Facebook - ссылки (без приставок https, http, www и так далее)</h4><br>
                     <h2>Соц. сети</h2>
                     <div>

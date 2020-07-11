@@ -3,8 +3,7 @@
         <Sidebar v-if="!loading" :currentGroup="$router.history.current.fullPath.split('/')[2]"/>
         <div v-if="!loading" class="product-detail">
             <div class="product-detail__image">
-
-                <!--{{images.length > 0 ? --><div class="product-detail__image__main" v-if="images.length > 0">
+                <div class="product-detail__image__main" v-if="mainImage.length > 0 || images.length > 0">
                     <transition-group name="thumbnailfade" tag="div">
                         <img
                                 @click="showLightboxMain(mainImage[0]['name'])"
@@ -225,8 +224,8 @@
                     return product.id === Number(idProduct)
                 });
                 this.product = data[indexProduct];
-                ProductImagesService.getProductImages(idProduct).then(({data})=>{
-                    data.forEach(({pathImage}, imageIndex) => {
+                ProductImagesService.getProductImages(idProduct).then((response)=>{
+                    response.data.forEach(({pathImage}, imageIndex) => {
                         if (imageIndex !== 0) {
                             this.images.push({
                                 'name': pathImage,
@@ -236,7 +235,7 @@
                         }
                     });
                     this.mainImage = [{
-                        'name': data[0].pathImage,
+                        'name': response.data[0].pathImage,
                         'filter': 'image',
                         'id': 'image0'
                     }];
