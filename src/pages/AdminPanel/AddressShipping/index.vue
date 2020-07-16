@@ -106,7 +106,7 @@
                 AddressShippingService.getShippingService().then(({data}) => {
                     this.images = data[0].images;
                     this.address = data[0].address;
-                    this.id = data[0]._id;
+                    this.id = data[0].id;
                 }).catch(() => {
                     alert('Неполадки с сервером.');
                     AddressShippingService.insertShippingService({
@@ -116,7 +116,7 @@
                         AddressShippingService.getShippingService().then(({data}) => {
                             this.images = data[0].images;
                             this.address = data[0].address;
-                            this.id = data[0]._id;
+                            this.id = data[0].id;
                         })
                     })
                 })

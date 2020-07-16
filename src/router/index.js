@@ -38,6 +38,7 @@ import AdminPanelContacts from '../pages/AdminPanel/Contacts';
 import AdminPanelOrders from '../pages/AdminPanel/Orders';
 import AdminPanelOrder from '../pages/AdminPanel/Orders/Order';
 import AdminLogin from '../pages/AdminPanel/Login';
+import ForgotPassword from '../pages/ForgotPassword'
 
 Vue.use(VueRouter);
 
@@ -136,6 +137,11 @@ export const router = new VueRouter({
                     path: 'login',
                     name: 'login',
                     component: Login
+                },
+                {
+                    path: 'login/forgot-password/:token',
+                    name: 'forgot-password',
+                    component: ForgotPassword
                 },
                 {
                     path: 'reset-password',

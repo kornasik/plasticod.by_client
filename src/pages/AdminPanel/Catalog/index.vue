@@ -118,7 +118,7 @@
                             >
                                 <v-list-item
                                         v-for="group in groups"
-                                        :key="group._id"
+                                        :key="group.id"
                                         :inactive="true"
                                 >
 
@@ -227,7 +227,7 @@
             deleteGroup(id) {
                 GroupsService.deleteGroups(id).then(() => {
                     this.groups.splice(this.groups.findIndex((group) => {
-                        return group._id === id
+                        return group.id === id
                     }), 1)
                 }).then(() => {
                     this.snackbarText = "Группа была удалена";

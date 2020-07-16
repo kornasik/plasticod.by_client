@@ -59,7 +59,7 @@
             initAbout() {
                 ContactsService.getContacts().then(({data}) => {
                     this.contacts = data[0].contacts;
-                    this.id = data[0]._id;
+                    this.id = data[0].id;
                 }).catch(() => {
                     ContactsService.insertContacts({
                         contacts: []

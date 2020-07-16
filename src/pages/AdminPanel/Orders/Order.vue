@@ -27,6 +27,7 @@
                             <img :style="{height:'120px'}" :src="item.image" alt="">
                             <div :style="{padding: '10px 0 30px 20px'}">
                                 <span :style="{cursor: 'pointer'}">{{item.name}}</span>
+                                <div :style="{padding: '10px 0 0 0'}">Код: {{item.code}}</div>
                             </div>
                         </div>
                     </template>
@@ -253,7 +254,7 @@
                 return weight.toFixed(2)
             },
             transitionOnProduct(product) {
-                this.$router.push(`/catalog/${product.group.split(' ').join('').toLowerCase()}/${product._id}`);
+                this.$router.push(`/catalog/${product.group.split(' ').join('').toLowerCase()}/${product.id}`);
             },
             calcPriceProduct(product) {
                 if (product.priceBeforeTen || product.priceBeforeHundred) {

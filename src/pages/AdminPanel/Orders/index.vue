@@ -13,7 +13,7 @@
                             :headers="headers"
                             :items="orders"
                             class="elevation-1"
-                            hide-default-footer
+                            :items-per-page="100"
                             v-if="orders.length > 0"
                     >
                         <template v-slot:item.number="{item}">
