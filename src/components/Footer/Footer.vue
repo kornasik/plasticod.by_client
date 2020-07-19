@@ -24,7 +24,7 @@
             ИП Андалюкевич Иван Иванович<br>
             УНП 191801242<br>
             (+375) 29 103-15-86;<br>
-            <a href="#">info@plasticod.by</a><br>
+            <a href="mailto:info@plasticod.by">info@plasticod.by</a><br>
 
         </div>
     </div>

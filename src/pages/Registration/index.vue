@@ -13,10 +13,10 @@
                         <v-text-field v-model="password" label="Пароль *" :type="'password'" :rules="[rules.required]"
                                       :error="errors.password"></v-text-field>
                         <v-text-field v-model="confirmPassword" :type="'password'"
-                                      label="Подтвреждение пароля *" :rules="[rules.required]"
+                                      label="Подтверждение пароля *" :rules="[rules.required]"
                                       :error="errors.confirmPassword"></v-text-field>
                         <v-text-field v-model="valueFields.nameCompany"
-                                      label="Наименование оргинизации, ИП *" :rules="[rules.required]"
+                                      label="Наименование организации, ИП *" :rules="[rules.required]"
                                       :error="errors.nameCompany"></v-text-field>
                         <v-text-field v-model="valueFields.legalAddress" label="Юридический адрес *"
                                       :rules="[rules.required]" :error="errors.legalAddress"></v-text-field>
@@ -53,8 +53,11 @@
                         <v-text-field v-model="valueFields.fullName" label="Ф.И.О. контактного лица *"
                                       :rules="[rules.required]" :error="errors.fio"></v-text-field>
                         <v-text-field v-model="valueFields.phoneNumber"
-                                      label="Телефон (Пример: (029) 1111111) *" :rules="[rules.phone]"
-                                      :error="errors.phoneNumber"></v-text-field>
+                                      label="Телефон (Пример: (29) 1111111) *"
+                                        prefix="+375"
+                                      :rules="[rules.phone]"
+                                      :error="errors.phoneNumber"
+                                      ></v-text-field>
                     </v-app>
                 </v-expansion-panel-content>
             </v-expansion-panel>
@@ -179,7 +182,7 @@
             },
             rules: {
                 required: value => !!value || 'Required.',
-                phone: value => value.length > 10 || 'Слишком короткий телефон',
+                phone: value => value.length > 8 || 'Слишком короткий телефон',
                 email: value => {
                     const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                     return pattern.test(value) || 'Invalid e-mail.'

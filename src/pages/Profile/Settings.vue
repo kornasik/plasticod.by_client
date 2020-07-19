@@ -205,9 +205,11 @@
                 }, 1500)
             },
             deleteUser() {
+                if(confirm("Вы действительно хотите удалить аккаунт?")){
                 UserService.deleteUser(localStorage.getItem('token'));
                 localStorage.removeItem('token');
                 this.$router.push('/about');
+                }
             }
         },
         created() {

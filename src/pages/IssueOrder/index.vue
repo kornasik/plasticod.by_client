@@ -1,4 +1,6 @@
 <template>
+<v-app>
+
     <div class="issue-order">
         <div v-if="!autorizationUser"
              :style="{display: 'flex',alignItems: 'center', padding: '50px 260px', width: 'fit-content'}">
@@ -30,7 +32,7 @@
                             <v-app>
                                 <v-text-field
                                         v-model="valueFields.nameCompany"
-                                        label="Наименование оргинизации, ИП *"
+                                        label="Наименование организации, ИП *"
                                         :error="errors.nameCompany"
                                         :messages="errors.nameCompany ? 'Поле не заполнено' : ''"/>
                                 <v-text-field
@@ -111,9 +113,10 @@
                                 />
                                 <v-text-field
                                         v-model="valueFields.phoneNumber"
-                                        label="Телефон (Пример: (029) 1111111) *"
+                                        label="Телефон (Пример: (29) 1111111) *"
+                                        prefix="+375"
                                         :error="errors.phoneNumber"
-                                        type="number"
+                                        type="tel"
                                         :messages="errors.phoneNumber ? 'Слишком короткий телефон' : ''"
                                 />
                             </v-app>
@@ -126,7 +129,7 @@
                             this.valueFields.email ? this.errors.email = false : this.errors.email = true
                             this.valueFields.unp ? this.errors.unp = false : this.errors.unp = true
                             this.valueFields.fullName ? this.errors.fullName = false : this.errors.fullName = true
-                            this.valueFields.phoneNumber.length > 10 ? this.errors.phoneNumber = false : this.errors.phoneNumber = true
+                            this.valueFields.phoneNumber.length > 8 ? this.errors.phoneNumber = false : this.errors.phoneNumber = true
 
                             if(
                                 this.valueFields.nameCompany &&
@@ -145,7 +148,7 @@
                     </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel>
-                    <v-expansion-panel-header color="#0070C0"><span :style="{color: 'white'}">3. Предложение о регистраии в качестве постоянного клиента.</span>
+                    <v-expansion-panel-header color="#0070C0"><span :style="{color: 'white'}">3. Предложение о регистрации в качестве постоянного клиента.</span>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <div :style="{display: 'flex', alignItems: 'center',margin: '30px auto', width: 'fit-content'}">
@@ -267,6 +270,7 @@
             </v-btn>
         </v-snackbar>
     </div>
+</v-app>      
 </template>
 
 <script>

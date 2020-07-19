@@ -71,12 +71,12 @@
                         this.$store.commit('setToken', data.token);
 
                         this.$router.push(this.url);
+                        this.$emit('emitLogin')
                     }
                 });
                 setTimeout(()=>{
                     this.errors.auth = true;
                 }, 1500);
-                this.$emit('emitLogin')
             }
         }
     }
