@@ -157,6 +157,7 @@
     import Sidebar from "./Sidebar";
     import PostService from "../../../services/products";
     import ProductImagesService from "../../../services/productImages";
+    import UserService from '../../../services/user';
 
     export default {
         name: 'Product',
@@ -191,6 +192,9 @@
                         basket[idProduct].countProduct += obj.countProduct
                     } else {
                         basket.push(obj);
+                    }
+                    if(localStorage.getItem('token')){
+                        UserService.updateUser(localStorage.getItem('token'), {basket: JSON.stringify(basket)});
                     }
                     localStorage.setItem('basket', JSON.stringify(basket));
                     this.snackbar = true;

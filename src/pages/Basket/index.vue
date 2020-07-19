@@ -86,6 +86,7 @@
 <script>
     import Button from "../../shared/elements/Button";
     import ProductImagesService from "../../services/productImages";
+    import UserService from '../../services/user';
 
     export default {
         name: 'Basket',
@@ -168,9 +169,13 @@
                 });
                 this.products.splice(id, 1);
                 localStorage.setItem('basket', JSON.stringify(this.products));
+                if(localStorage.getItem('token')){
+                        UserService.updateUser(localStorage.getItem('token'), {basket: JSON.stringify(this.products)});
+                    }
                 if (this.products.length < 1) {
                     this.emptyBasket = true;
                     localStorage.removeItem('basket')
+                    UserService.updateUser(localStorage.getItem('token'), {basket: ''});
                 }
             },
             changeCount() {

@@ -148,6 +148,7 @@
                 this.$store.commit('setToken', '');
                 this.isDropdown = false;
                 this.$router.push('/')
+                localStorage.removeItem('basket');
             }
         },
         created() {
