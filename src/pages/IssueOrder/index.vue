@@ -446,7 +446,6 @@
                         UserService.loadDataForUser(token).then(({data}) => {
                             this.$store.commit('setDataUser', data)
                         }).then(() => {
-                            localStorage.removeItem('basket');
                             this.$router.push('catalog')
                         })
                     }, 3000)
@@ -466,7 +465,6 @@
                         })
                     });
                     this.snackbar = true;
-                    localStorage.removeItem('basket');
                     setTimeout(() => {
                         this.snackbar = false;
                         this.$router.push('catalog')
@@ -477,14 +475,10 @@
                         ...this.valueFields,
                         ...this.addressShipping,
                         shipping: this.shipping,
-                        numberOrder: data[0].numberOrder
-                    }, {/*
-                        headers: {
-                            "Access-Control-Allow-Origin": '*',
-                            "Access-Control-Allow-Methods": '*',
-                            "Access-Control-Allow-Headers": 'Origin, X-Requested-With, Content-Type, Accept'
-                        }*/
-                    })
+                        numberOrder: data[0].numberOrder,
+                        basket: JSON.parse(localStorage.getItem('basket'))
+                    });
+                    localStorage.removeItem('basket');
                     GeneralService.updateGeneral({numberOrder: String(Number(data[0].numberOrder) + 1)})
                 })
             }
