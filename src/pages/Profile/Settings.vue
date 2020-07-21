@@ -194,7 +194,7 @@
                 this.address.comment = dataUser.comment;
             },
             updateUser() {
-                UserService.updateUser(localStorage.getItem('token'), {...this.valueFields, ...this.address, password: this.password});
+                UserService.updateUser(localStorage.getItem('token'), {...this.valueFields, ...this.address, password: this.password, dateIssue: this.date});
                 this.$store.commit('setDataUser', {...this.valueFields, ...this.address});
                 this.snackbar = true;
                 setTimeout(() => {

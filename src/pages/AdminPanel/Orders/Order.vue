@@ -75,7 +75,7 @@
                 </tr>
                 <tr>
                     <td>Почтовый индекс</td>
-                    <td>{{order.dataUser.postcode}}</td>
+                    <td>{{order.dataUser.postCode}}</td>
                 </tr>
                 <tr>
                     <td>E-mail</td>

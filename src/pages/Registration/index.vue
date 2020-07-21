@@ -230,7 +230,7 @@
                         this.errors.phoneNumber = false;
                         this.errors.iAgree = false;
                         UserService.insertUser({
-                            ...this.valueFields, ...this.address, password: this.password
+                            ...this.valueFields, ...this.address, password: this.password, dateIssue: this.date
                         });
                         this.$router.push('/login');
                     } else {

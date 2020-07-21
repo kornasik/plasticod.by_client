@@ -48,10 +48,10 @@
                                         :messages="errors.postAddress ? 'Поле не заполнено' : ''"
                                 />
                                 <v-text-field
-                                        v-model="valueFields.postcode"
+                                        v-model="valueFields.postCode"
                                         label="Почтовый индекс *"
-                                        :error="errors.postcode"
-                                        :messages="errors.postcode ? 'Поле не заполнено' : ''"
+                                        :error="errors.postCode"
+                                        :messages="errors.postCode ? 'Поле не заполнено' : ''"
                                 />
                                 <v-text-field
                                         v-model="valueFields.email"
@@ -125,7 +125,7 @@
                             this.valueFields.nameCompany ? this.errors.nameCompany = false : this.errors.nameCompany = true
                             this.valueFields.legalAddress ? this.errors.legalAddress = false : this.errors.legalAddress = true
                             this.valueFields.postAddress ? this.errors.postAddress = false : this.errors.postAddress = true
-                            this.valueFields.postcode ? this.errors.postcode = false : this.errors.postcode = true
+                            this.valueFields.postCode ? this.errors.postCode = false : this.errors.postCode = true
                             this.valueFields.email ? this.errors.email = false : this.errors.email = true
                             this.valueFields.unp ? this.errors.unp = false : this.errors.unp = true
                             this.valueFields.fullName ? this.errors.fullName = false : this.errors.fullName = true
@@ -135,7 +135,7 @@
                                 this.valueFields.nameCompany &&
                                 this.valueFields.legalAddress &&
                                 this.valueFields.postAddress &&
-                                this.valueFields.postcode &&
+                                this.valueFields.postCode &&
                                 this.valueFields.email &&
                                 this.valueFields.unp &&
                                 this.valueFields.fullName &&
@@ -300,7 +300,7 @@
                 nameCompany: false,
                 legalAddress: false,
                 postAddress: false,
-                postcode: false,
+                postCode: false,
                 email: false,
                 unp: false
             },
@@ -329,7 +329,7 @@
                 nameCompany: '',
                 legalAddress: '',
                 postAddress: '',
-                postcode: '',
+                postCode: '',
                 email: '',
                 unp: '',
                 whoIssued: '',
@@ -364,7 +364,7 @@
                 this.valueFields.nameCompany = dataUser.nameCompany;
                 this.valueFields.legalAddress = dataUser.legalAddress;
                 this.valueFields.postAddress = dataUser.postAddress;
-                this.valueFields.postcode = dataUser.postcode;
+                this.valueFields.postCode = dataUser.postCode;
                 this.valueFields.email = dataUser.email;
                 this.valueFields.unp = dataUser.unp;
                 this.valueFields.whoIssued = dataUser.whoIssued;
@@ -381,7 +381,7 @@
                 if (this.checkPassword === this.password) {
                     this.errors.matchPassword = false;
                     UserService.insertUser({
-                        ...this.valueFields, ...this.address, password: this.password, orders: []
+                        ...this.valueFields, ...this.address, password: this.password, orders: [], dateIssue: this.date
                     }).then(() => {
                         this.errors.emailExist = false;
                         UserService.getUser(this.valueFields.email, this.password).then(({data, status}) => {
