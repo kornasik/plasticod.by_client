@@ -180,8 +180,9 @@
             },
             changeCount() {
                 const copyProducts = this.products.filter((product) => {
-                    return product.countProduct > 0
+                    return Number(product.countProduct) > 0
                 })
+                this.products = copyProducts;
                 if (copyProducts.length === 0) {
                     localStorage.removeItem('basket');
                     this.products = []

@@ -374,6 +374,7 @@
                 this.valueFields.addressBank = dataUser.addressBank;
                 this.valueFields.fullName = dataUser.fullName;
                 this.valueFields.phoneNumber = dataUser.phoneNumber;
+                this.date = dataUser.dateIssue
             }
         },
         methods: {
@@ -449,6 +450,7 @@
                             this.$router.push('catalog')
                         })
                     }, 3000)
+                    UserService.updateUser(localStorage.getItem('token'), {basket: ''})
                 } else {
                     GeneralService.getGeneral().then(({data}) => {
                         OrderService.addOrder('anonymous', {
@@ -456,7 +458,8 @@
                             basket: basket,
                             shipping: this.shipping,
                             status: "open",
-                            numberOrder: data[0].numberOrder
+                            numberOrder: data[0].numberOrder,
+                            dateIssue: this.date
                         });
                         return data
                     }).then((response) => {
@@ -476,7 +479,8 @@
                         ...this.addressShipping,
                         shipping: this.shipping,
                         numberOrder: data[0].numberOrder,
-                        basket: JSON.parse(localStorage.getItem('basket'))
+                        basket: JSON.parse(localStorage.getItem('basket')),
+                            dateIssue: this.date
                     });
                     localStorage.removeItem('basket');
                     GeneralService.updateGeneral({numberOrder: String(Number(data[0].numberOrder) + 1)})

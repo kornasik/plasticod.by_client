@@ -39,6 +39,7 @@ import AdminPanelOrders from '../pages/AdminPanel/Orders';
 import AdminPanelOrder from '../pages/AdminPanel/Orders/Order';
 import AdminLogin from '../pages/AdminPanel/Login';
 import ForgotPassword from '../pages/ForgotPassword'
+import InfoSupport from '../pages/AdminPanel/InfoSupport';
 
 Vue.use(VueRouter);
 
@@ -247,6 +248,11 @@ export const router = new VueRouter({
                     path: 'privacy-policy',
                     name: 'privacy-policy',
                     component: AdminPrivacyPolicy
+                },
+                {
+                    path: 'info-support',
+                    name: 'info-support',
+                    component: InfoSupport
                 }
             ]
         }

@@ -79,6 +79,11 @@
                         href: '/admin/privacy-policy',
                         title: 'Политика конфиденциальности',
                         icon: 'fa fa-landmark'
+                    },
+                    {
+                        href: '/admin/info-support',
+                        title: 'Информационная поддержка',
+                        icon: 'fas fa-question'
                     }
                 ]
             }
