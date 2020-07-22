@@ -12,7 +12,7 @@ class InfoSupportService {
     }
 
     static deleteFile(idFile) {
-        return axios.delete(`${url}/${idFile}`)
+        return axios.delete(`${url}/delete/${idFile}`)
     }
 
     static getAllFiles() {

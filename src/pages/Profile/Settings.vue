@@ -175,6 +175,9 @@ export default {
       if (confirm("Вы действительно хотите удалить аккаунт?")) {
         UserService.deleteUser(localStorage.getItem("token"));
         localStorage.removeItem("token");
+        this.$store.commit("setToken", '');
+        this.$store.commit("setLogin", false);
+        this.$store.commit("setDataUser", {});
         this.$router.push("/about");
       }
     }

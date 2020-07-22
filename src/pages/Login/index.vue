@@ -64,7 +64,11 @@ export default {
                 basket: localStorage.getItem("basket")
               });
             } else {
-              localStorage.setItem("basket", data.basket);
+              if (data.basket.length > 0) {
+                localStorage.setItem("basket", data.basket);
+              } else {
+                localStorage.setItem("basket", JSON.stringify([]));
+              }
             }
             this.$router.push(this.url);
             this.$emit("emitLogin");
