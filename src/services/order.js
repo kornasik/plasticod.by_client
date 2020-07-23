@@ -28,7 +28,7 @@ class OrderService {
     }
 
     static deleteOrder(id) {
-        return axios.post(`${url}/delete/${id}`)
+        return axios.delete(`${url}/delete/${id}`)
     }
 }
 
