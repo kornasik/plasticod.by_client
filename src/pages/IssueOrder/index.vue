@@ -235,7 +235,7 @@
                   вместе с документами на товар.
                   <br />
                 </div>
-                <Button :text-button="'Продолжить'" :width="'180px'" @click="activeStep = [5]" />
+                <Button :text-button="'Продолжить'" :width="'180px'" @click="shipping === 'pickup' ? activeStep = [6] : activeStep = [5]" />
               </div>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -432,7 +432,6 @@ export default {
       this.activeStep = [4];
     },
     sendOrder() {
-      debugger
       const dataUser = { ...this.valueFields, ...this.addressShipping };
       const basket = JSON.parse(localStorage.getItem("basket"));
       const token = localStorage.getItem("token");

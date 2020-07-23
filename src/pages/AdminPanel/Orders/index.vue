@@ -156,7 +156,7 @@
                             id: id
                         }
                     }
-                })
+                });
                 this.orders.reverse();
             })
         },
@@ -175,14 +175,14 @@
                         return JSON.parse(order.order).numberOrder === item.number
                     });
                     return {...data[index]};
-                }).then(({order, token}) => {
+                }).then(({order, token, id}) => {
                     const parseOrder = JSON.parse(order);
                     if (event.target.value === 'open') {
                         parseOrder.status = 'open'
                     } else {
                         parseOrder.status = 'close'
                     }
-                    OrderService.updateOrder(JSON.stringify(parseOrder), token).then(() => {
+                    OrderService.updateOrder(JSON.stringify(parseOrder), token, id).then(() => {
                         this.snackbar = true;
                     })
                 });
@@ -198,8 +198,19 @@
             deleteOrder() {
                 if (this.selectOrders.length < 11) {
                     this.selectOrders.forEach((numberOrder, indexNumber) => {
-                        OrderService.deleteOrder(numberOrder);
-                        this.selectOrders.splice(indexNumber, 1)
+                        OrderService.deleteOrder(numberOrder).then(()=>{
+                            const indexOrder = this.orders.indexOf((order) => {
+                                return Number(order.number) === numberOrder
+                            });
+                            this.selectOrders.splice(indexNumber, 1);
+                            this.orders.splice(indexOrder, 1)
+                        }).catch(()=>{
+                            const indexOrder = this.orders.indexOf((order) => {
+                                return Number(order.number) === numberOrder
+                            });
+                            this.selectOrders.splice(indexNumber, 1);
+                            this.orders.splice(indexOrder, 1)
+                        })
                     })
                 } else {
                     alert('За один раз можно удалить не более 10 записей');

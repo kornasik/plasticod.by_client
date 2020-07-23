@@ -21,9 +21,9 @@ class OrderService {
         return axios.get(`${url}/all-orders`)
     }
 
-    static updateOrder(order, token) {
+    static updateOrder(order, token, id) {
         return axios.post(`${url}/update`, {
-            order, token
+            order, token, id
         })
     }
 
