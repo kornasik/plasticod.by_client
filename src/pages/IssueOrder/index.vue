@@ -432,6 +432,7 @@ export default {
       this.activeStep = [4];
     },
     sendOrder() {
+      debugger
       const dataUser = { ...this.valueFields, ...this.addressShipping };
       const basket = JSON.parse(localStorage.getItem("basket"));
       const token = localStorage.getItem("token");

@@ -26,6 +26,10 @@ class OrderService {
             order, token
         })
     }
+
+    static deleteOrder(id) {
+        return axios.post(`${url}/delete/${id}`)
+    }
 }
 
 export default OrderService;

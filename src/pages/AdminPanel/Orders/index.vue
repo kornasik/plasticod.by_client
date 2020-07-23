@@ -8,7 +8,19 @@
                     </v-toolbar>
                 </v-card>
                 <div class="main">
-                    <h2 :style="{marginBottom: '30px'}">Заказы</h2>
+                    <div :style="{display: 'flex', justifyContent: 'space-between', marginBottom: '30px'}">
+                        <h2>Заказы</h2>
+                        <v-btn
+                                :style="{margin: 'auto 0 auto 30px', color: 'white'}"
+                                small
+                                color="red"
+                                @click="deleteOrder"
+                                v-if="selectOrders.length > 0"
+                        >
+                            <v-icon left small>fas fa-trash</v-icon>
+                            Удалить
+                        </v-btn>
+                    </div>
                     <v-data-table
                             :headers="headers"
                             :items="orders"
@@ -16,6 +28,9 @@
                             :items-per-page="100"
                             v-if="orders.length > 0"
                     >
+                        <template v-slot:item.select="{item}">
+                            <v-checkbox @change="selectOrder(item.id)"/>
+                        </template>
                         <template v-slot:item.number="{item}">
                             <div
                                     :style="{color: '#305496', display: 'flex', cursor: 'pointer'}"
@@ -86,7 +101,14 @@
             snackbar: false,
             allUsers: [],
             orders: [],
+            selectOrders: [],
             headers: [
+                {
+                    text: 'Выбрать',
+                    align: 'center',
+                    value: 'select',
+                    width: 110,
+                },
                 {
                     text: '№ Заказа',
                     align: 'start',
@@ -111,25 +133,28 @@
         }),
         created() {
             OrderService.getAllOrders().then(({data}) => {
-                this.orders = data.map(({order, createdAt}) => {
+                this.orders = data.map(({order, createdAt, id}) => {
                     const orderCopy = JSON.parse(order);
-                    this.basket = orderCopy.basket;
-                    let total = 0;
-                    if (orderCopy.basket.length > 1) {
-                        total = orderCopy.basket.reduce((next, current) => {
-                            return (current.countProduct < 10 ? current.priceBeforeTen : current.priceBeforeHundred * current.countProduct) + (next.countProduct < 10 ? next.priceBeforeTen : next.priceBeforeHundred * next.countProduct)
-                        })
-                    } else {
-                        total = orderCopy.basket[0].countProduct * orderCopy.basket[0].countProduct < 10 ? orderCopy.basket[0].priceBeforeTen : orderCopy.basket[0].priceBeforeHundred
-                    }
-                    return {
-                        number: orderCopy.numberOrder,
-                        status: orderCopy.status === 'open' ? "Открытый" : "Закрытый",
-                        customer: orderCopy.dataUser.fullName,
-                        date: createdAt,
-                        delivery: orderCopy.shipping === 'transportCompany' ? "Транспортной компанией" : "Самовывоз",
-                        total: total,
-                        email: orderCopy.dataUser.email
+                    if (orderCopy.basket !== null) {
+                        this.basket = orderCopy.basket;
+                        let total = 0;
+                        if (orderCopy.basket.length > 1) {
+                            total = orderCopy.basket.reduce((next, current) => {
+                                return (current.countProduct < 10 ? current.priceBeforeTen : current.priceBeforeHundred * current.countProduct) + (next.countProduct < 10 ? next.priceBeforeTen : next.priceBeforeHundred * next.countProduct)
+                            })
+                        } else {
+                            total = orderCopy.basket[0].countProduct * orderCopy.basket[0].countProduct < 10 ? orderCopy.basket[0].priceBeforeTen : orderCopy.basket[0].priceBeforeHundred
+                        }
+                        return {
+                            number: orderCopy.numberOrder,
+                            status: orderCopy.status === 'open' ? "Открытый" : "Закрытый",
+                            customer: orderCopy.dataUser.fullName,
+                            date: createdAt,
+                            delivery: orderCopy.shipping === 'transportCompany' ? "Транспортной компанией" : "Самовывоз",
+                            total: total,
+                            email: orderCopy.dataUser.email,
+                            id: id
+                        }
                     }
                 })
                 this.orders.reverse();
@@ -145,12 +170,10 @@
                 return newFormateDate + ' ' + newFormateTimes
             },
             async handleStatus(event, item) {
-                let order = {};
                 await OrderService.getAllOrders().then(({data}) => {
                     const index = data.findIndex((order) => {
                         return JSON.parse(order.order).numberOrder === item.number
                     });
-                    order = {...data[index]};
                     return {...data[index]};
                 }).then(({order, token}) => {
                     const parseOrder = JSON.parse(order);
@@ -163,8 +186,25 @@
                         this.snackbar = true;
                     })
                 });
-                console.log(order)
-
+            },
+            selectOrder(id) {
+                const indexOrderNumber = this.selectOrders.indexOf(id);
+                if (indexOrderNumber > -1) {
+                    this.selectOrders.splice(indexOrderNumber, 1)
+                } else {
+                    this.selectOrders.push(id);
+                }
+            },
+            deleteOrder() {
+                if (this.selectOrders.length < 11) {
+                    this.selectOrders.forEach((numberOrder, indexNumber) => {
+                        OrderService.deleteOrder(numberOrder).then(() => {
+                            this.selectOrders.splice(indexNumber, 1)
+                        })
+                    })
+                } else {
+                    alert('За один раз можно удалить не более 10 записей');
+                }
             }
         }
     }
