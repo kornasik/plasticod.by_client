@@ -198,9 +198,8 @@
             deleteOrder() {
                 if (this.selectOrders.length < 11) {
                     this.selectOrders.forEach((numberOrder, indexNumber) => {
-                        OrderService.deleteOrder(numberOrder).then(() => {
-                            this.selectOrders.splice(indexNumber, 1)
-                        })
+                        OrderService.deleteOrder(numberOrder);
+                        this.selectOrders.splice(indexNumber, 1)
                     })
                 } else {
                     alert('За один раз можно удалить не более 10 записей');
