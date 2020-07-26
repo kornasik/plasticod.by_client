@@ -3,33 +3,22 @@
         <Sidebar v-if="!loading" :currentGroup="$router.history.current.fullPath.split('/')[2]"/>
         <div v-if="!loading" class="product-detail">
             <div class="product-detail__image">
-                <div class="product-detail__image__main" v-if="mainImage.length > 0 || images.length > 0">
-                    <transition-group name="thumbnailfade" tag="div">
-                        <img
-                                @click="showLightboxMain(mainImage[0]['name'])"
-                                :src="mainImage[0]['name']"
-                                :key="mainImage[0].id"/>
+                <div class="product-detail__image__main" v-if="copyImages.length > 0">
+                    <transition-group name="thumbnailfade1" tag="div">
+                        <img v-for="image in mainImage" :src="image.name" alt="main-img" @click="showLightbox(image.name)" :key="image.name">
                     </transition-group>
-                    <lightbox id="mylightboxmain"
-                              ref="lightboxMain"
-                              :images="[mainImage[0]]"
+                    <transition-group name="thumbnailfade" tag="div" class="min-photo">
+                        <img v-for="thumb in images"
+                             :key="thumb.id"
+                             @click="showLightbox(thumb.name)"
+                             :src="thumb.name"/>
+                    </transition-group>
+
+                    <lightbox id="mylightbox"
+                              ref="lightbox"
+                              :images="copyImages"
                               :timeoutDuration="5000"
                     />
-                    <div class="product-detail__images__min">
-                        <div v-for="(image, imageIndex) in images" :key="image.id">
-                            <transition-group name="thumbnailfade" tag="div">
-                                <img
-                                        @click="showLightbox(image['name'], imageIndex)"
-                                        :src="image['name']"
-                                        :key="image.id"/>
-                            </transition-group>
-                            <lightbox id="mylightbox"
-                                      ref="lightbox"
-                                      :images="[image]"
-                                      :timeoutDuration="5000"
-                            />
-                        </div>
-                    </div>
                 </div>
                 <div class="product-detail__image__main" v-else>
                     <img :src="'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Empty_set.svg/1200px-Empty_set.svg.png'"
@@ -82,7 +71,8 @@
                 <div class="product-detail__information__code-compatibility item">
                     <div class="product-detail__text">Стыкуется с кодами:</div>
                     <div :style="{display: 'flex', flexDirection: 'column'}">
-                        <div class="product-detail__value" v-for="code in product.codeCompatibility.split(';')" :key="code">
+                        <div class="product-detail__value" v-for="code in product.codeCompatibility.split(';')"
+                             :key="code">
                             <div>{{code}}</div>
                         </div>
                     </div>
@@ -171,7 +161,8 @@
             loading: true,
             snackbar: false,
             images: [],
-            mainImage: [0]
+            mainImage: [0],
+            copyImages: []
         }),
         methods: {
             print() {
@@ -193,7 +184,7 @@
                     } else {
                         basket.push(obj);
                     }
-                    if(localStorage.getItem('token')){
+                    if (localStorage.getItem('token')) {
                         UserService.updateUser(localStorage.getItem('token'), {basket: JSON.stringify(basket)});
                     }
                     localStorage.setItem('basket', JSON.stringify(basket));
@@ -203,8 +194,8 @@
                     }, 3000)
                 }
             },
-            showLightbox: function (imageName, id) {
-                this.$refs.lightbox[id].show(imageName);
+            showLightbox: function (imageName) {
+                this.$refs.lightbox.show(imageName);
             },
             showLightboxMain: function (imageName) {
                 this.$refs.lightboxMain.show(imageName);
@@ -228,7 +219,7 @@
                     return product.id === Number(idProduct)
                 });
                 this.product = data[indexProduct];
-                ProductImagesService.getProductImages(idProduct).then((response)=>{
+                ProductImagesService.getProductImages(idProduct).then((response) => {
                     response.data.forEach(({pathImage}, imageIndex) => {
                         if (imageIndex !== 0) {
                             this.images.push({
@@ -237,6 +228,11 @@
                                 'id': 'image' + imageIndex
                             })
                         }
+                        this.copyImages.push({
+                            'name': pathImage,
+                            'filter': 'image',
+                            'id': 'image' + imageIndex
+                        })
                     });
                     this.mainImage = [{
                         'name': response.data[0].pathImage,
@@ -398,17 +394,50 @@
         display: flex;
     }
 
-    .product-detail__images__min img {
+    .min-photo {
+        display: flex;
+    }
+
+    .min-photo img {
         margin: 0;
         border-top: none;
         width: 111px;
         height: 112px;
     }
 
+/*    .product-detail__image__main img:nth-child(2) {
+        margin: 0;
+        border-top: none;
+        width: 111px;
+        height: 112px;
+    }
+
+    .product-detail__image__main img:nth-child(3) {
+        margin: 0;
+        border-top: none;
+        width: 111px;
+        height: 112px;
+    }
+
+    .product-detail__image__main img:nth-child(4) {
+        margin: 0;
+        border-top: none;
+        width: 111px;
+        height: 112px;
+    }
+
+    .product-detail__image__main img:nth-child(5) {
+        margin: 0;
+        border-top: none;
+        width: 111px;
+        height: 112px;
+    }*/
+
     @media print {
-        *{
+        * {
             border: none;
         }
+
         .product-detail__count {
             display: none;
         }
@@ -435,7 +464,7 @@
         }
 
 
-        .product-detail__image__main img{
+        .product-detail__image__main img {
             border: none;
         }
     }

@@ -132,35 +132,47 @@
             ],
         }),
         created() {
-            OrderService.getAllOrders().then(({data}) => {
-                this.orders = data.map(({order, createdAt, id}) => {
-                    const orderCopy = JSON.parse(order);
-                    if (orderCopy.basket !== null) {
-                        this.basket = orderCopy.basket;
-                        let total = 0;
-                        if (orderCopy.basket.length > 1) {
-                            total = orderCopy.basket.reduce((next, current) => {
-                                return (current.countProduct < 10 ? current.priceBeforeTen : current.priceBeforeHundred * current.countProduct) + (next.countProduct < 10 ? next.priceBeforeTen : next.priceBeforeHundred * next.countProduct)
-                            })
-                        } else {
-                            total = orderCopy.basket[0].countProduct * orderCopy.basket[0].countProduct < 10 ? orderCopy.basket[0].priceBeforeTen : orderCopy.basket[0].priceBeforeHundred
-                        }
-                        return {
-                            number: orderCopy.numberOrder,
-                            status: orderCopy.status === 'open' ? "Открытый" : "Закрытый",
-                            customer: orderCopy.dataUser.fullName,
-                            date: createdAt,
-                            delivery: orderCopy.shipping === 'transportCompany' ? "Транспортной компанией" : "Самовывоз",
-                            total: total,
-                            email: orderCopy.dataUser.email,
-                            id: id
-                        }
-                    }
-                });
-                this.orders.reverse();
-            })
+            this.init();
+            this.intervalGetOrders();
+        },
+        beforeDestroy() {
+            clearInterval(this.intervalGetOrders)
         },
         methods: {
+            init() {
+                OrderService.getAllOrders().then(({data}) => {
+                    this.orders = data.map(({order, createdAt, id}) => {
+                        const orderCopy = JSON.parse(order);
+                        if (orderCopy.basket !== null) {
+                            this.basket = orderCopy.basket;
+                            let total = 0;
+                            if (orderCopy.basket.length > 1) {
+                                total = orderCopy.basket.reduce((next, current) => {
+                                    return (current.countProduct < 10 ? current.priceBeforeTen : current.priceBeforeHundred * current.countProduct) + (next.countProduct < 10 ? next.priceBeforeTen : next.priceBeforeHundred * next.countProduct)
+                                })
+                            } else {
+                                total = orderCopy.basket[0].countProduct * orderCopy.basket[0].countProduct < 10 ? orderCopy.basket[0].priceBeforeTen : orderCopy.basket[0].priceBeforeHundred
+                            }
+                            return {
+                                number: orderCopy.numberOrder,
+                                status: orderCopy.status === 'open' ? "Открытый" : "Закрытый",
+                                customer: orderCopy.dataUser.fullName,
+                                date: createdAt,
+                                delivery: orderCopy.shipping === 'transportCompany' ? "Транспортной компанией" : "Самовывоз",
+                                total: total,
+                                email: orderCopy.dataUser.email,
+                                id: id
+                            }
+                        }
+                    });
+                    this.orders.reverse();
+                })
+            },
+            intervalGetOrders(){
+                setInterval(() => {
+                    this.init();
+                }, 5000)
+            },
             transitionOrder(number) {
                 this.$router.push(`/admin/orders/${number}`)
             },
@@ -198,20 +210,22 @@
             deleteOrder() {
                 if (this.selectOrders.length < 11) {
                     this.selectOrders.forEach((numberOrder, indexNumber) => {
-                        OrderService.deleteOrder(numberOrder).then(()=>{
-                            const indexOrder = this.orders.indexOf((order) => {
+                        OrderService.deleteOrder(numberOrder).then(() => {
+                            debugger
+                            const indexOrder = this.orders.findIndex((order) => {
                                 return Number(order.number) === numberOrder
                             });
                             this.selectOrders.splice(indexNumber, 1);
                             this.orders.splice(indexOrder, 1)
-                        }).catch(()=>{
-                            const indexOrder = this.orders.indexOf((order) => {
+                        }).catch(() => {
+                            const indexOrder = this.orders.findIndex((order) => {
                                 return Number(order.number) === numberOrder
                             });
                             this.selectOrders.splice(indexNumber, 1);
                             this.orders.splice(indexOrder, 1)
                         })
                     })
+                    this.selectOrders = [];
                 } else {
                     alert('За один раз можно удалить не более 10 записей');
                 }

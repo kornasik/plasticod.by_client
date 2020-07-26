@@ -5,8 +5,12 @@
             <div class="groups__header__description">{{group.description}}</div>
         </div>
         <div class="groups-body">
-            <img v-for="(image, imageIndex) in images" :key="`${group.id}${imageIndex}`" :src="image.pathImage"
-                 alt="image"/>
+            <img
+                    v-for="(image, imageIndex) in images"
+                    :key="`${group.id}${imageIndex}`"
+                    :src="image.pathImage"
+                    alt="image"
+            />
         </div>
     </div>
 </template>
@@ -30,7 +34,7 @@
         },
         created() {
             GroupImagesService.getAllGroupsImages().then(({data}) => {
-                this.images = data.filter((image)=>{
+                this.images = data.filter((image) => {
                     return image.groupId === this.group.id
                 });
             })
@@ -47,6 +51,7 @@
         border-bottom: 2px solid black;
         cursor: pointer;
     }
+
     .groups__header:hover {
         background-color: #0070C0;
     }

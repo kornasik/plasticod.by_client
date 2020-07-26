@@ -5,7 +5,7 @@
         v-if="!autorizationUser"
         :style="{display: 'flex',alignItems: 'center', padding: '50px 260px', width: 'fit-content'}"
       >
-        <span>Войти как зарегестированный пользователь ?</span>
+        <span>Войти как зарегистированный пользователь ?</span>
         <Button
           :text-button="'Да'"
           :width="'80px'"
@@ -105,7 +105,7 @@
                   />
                   <v-text-field
                     v-model="valueFields.phoneNumber"
-                    label="Телефон (Пример: (29) 1111111) *"
+                    label="Телефон (Пример: 291111111) *"
                     prefix="+375"
                     :error="errors.phoneNumber"
                     type="tel"
@@ -432,80 +432,90 @@ export default {
       this.activeStep = [4];
     },
     sendOrder() {
-      const dataUser = { ...this.valueFields, ...this.addressShipping };
       const basket = JSON.parse(localStorage.getItem("basket"));
-      const token = localStorage.getItem("token");
-      if (localStorage.getItem("token")) {
-        GeneralService.getGeneral()
-          .then(({ data }) => {
-            OrderService.addOrder(token, {
-              dataUser: dataUser,
-              basket: basket,
-              shipping: this.shipping,
-              status: "open",
-              numberOrder: data[0].numberOrder
-            });
-            return data;
-          })
-          .then(response => {
-            GeneralService.updateGeneral({
-              numberOrder: String(Number(response[0].numberOrder) + 1)
-            });
-          });
+      if(basket.length > 0) {
+        const dataUser = {...this.valueFields, ...this.addressShipping};
+        const token = localStorage.getItem("token");
+        if (localStorage.getItem("token")) {
+          GeneralService.getGeneral()
+                  .then(({data}) => {
+                    OrderService.addOrder(token, {
+                      dataUser: dataUser,
+                      basket: basket,
+                      shipping: this.shipping,
+                      status: "open",
+                      numberOrder: data[0].numberOrder
+                    });
+                    return data;
+                  })
+                  .then(response => {
+                    GeneralService.updateGeneral({
+                      numberOrder: String(Number(response[0].numberOrder) + 1)
+                    });
+                  });
 
-        this.snackbar = true;
-        setTimeout(() => {
-          this.snackbar = false;
-        }, 3000);
+          this.snackbar = true;
+          setTimeout(() => {
+            this.snackbar = false;
+          }, 3000);
 
-        setTimeout(() => {
-          UserService.loadDataForUser(token)
-            .then(({ data }) => {
-              this.$store.commit("setDataUser", data);
-            })
-            .then(() => {
-              this.$router.push("catalog");
-            });
-        }, 3000);
-        UserService.updateUser(localStorage.getItem("token"), { basket: "" });
-      } else {
-        GeneralService.getGeneral()
-          .then(({ data }) => {
-            OrderService.addOrder("anonymous", {
-              dataUser: dataUser,
-              basket: basket,
-              shipping: this.shipping,
-              status: "open",
-              numberOrder: data[0].numberOrder,
-              dateIssue: this.date
-            });
-            return data;
-          })
-          .then(response => {
-            GeneralService.updateGeneral({
-              numberOrder: String(Number(response[0].numberOrder) + 1)
-            });
+          setTimeout(() => {
+            UserService.loadDataForUser(token)
+                    .then(({data}) => {
+                      this.$store.commit("setDataUser", data);
+                    })
+                    .then(() => {
+                      this.$router.push("catalog");
+                    });
+          }, 3000);
+          UserService.updateUser(localStorage.getItem("token"), {basket: ""});
+        } else {
+          GeneralService.getGeneral()
+                  .then(({data}) => {
+                    OrderService.addOrder("anonymous", {
+                      dataUser: dataUser,
+                      basket: basket,
+                      shipping: this.shipping,
+                      status: "open",
+                      numberOrder: data[0].numberOrder,
+                      dateIssue: this.date
+                    });
+                    return data;
+                  })
+                  .then(response => {
+                    GeneralService.updateGeneral({
+                      numberOrder: String(Number(response[0].numberOrder) + 1)
+                    });
+                  });
+          this.snackbar = true;
+          setTimeout(() => {
+            this.snackbar = false;
+            this.$router.push("catalog");
+          }, 3000);
+        }
+        GeneralService.getGeneral().then(({data}) => {
+          axios.post("http://plasticod.by/api/post-mail", {
+            ...this.valueFields,
+            ...this.addressShipping,
+            shipping: this.shipping,
+            numberOrder: data[0].numberOrder,
+            basket: JSON.parse(localStorage.getItem("basket")),
+            dateIssue: this.date
           });
-        this.snackbar = true;
-        setTimeout(() => {
-          this.snackbar = false;
-          this.$router.push("catalog");
-        }, 3000);
+          axios.post("http://plasticod.by/api/post-mail/send-order-client", {
+            ...this.valueFields,
+            ...this.addressShipping,
+            shipping: this.shipping,
+            numberOrder: data[0].numberOrder,
+            basket: JSON.parse(localStorage.getItem("basket")),
+            dateIssue: this.date
+          });
+          localStorage.removeItem("basket");
+          GeneralService.updateGeneral({
+            numberOrder: String(Number(data[0].numberOrder) + 1)
+          });
+        });
       }
-      GeneralService.getGeneral().then(({ data }) => {
-        axios.post("http://plasticod.by/api/post-mail", {
-          ...this.valueFields,
-          ...this.addressShipping,
-          shipping: this.shipping,
-          numberOrder: data[0].numberOrder,
-          basket: JSON.parse(localStorage.getItem("basket")),
-          dateIssue: this.date
-        });
-        localStorage.removeItem("basket");
-        GeneralService.updateGeneral({
-          numberOrder: String(Number(data[0].numberOrder) + 1)
-        });
-      });
     }
   }
 };

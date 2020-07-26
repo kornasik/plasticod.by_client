@@ -84,7 +84,7 @@
             ></v-text-field>
             <v-text-field
               v-model="valueFields.phoneNumber"
-              label="Телефон (Пример: (29) 1111111) *"
+              label="Телефон (Пример: 291111111) *"
               prefix="+375"
               :rules="[rules.phone]"
               type="tel"

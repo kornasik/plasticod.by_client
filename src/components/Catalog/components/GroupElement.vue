@@ -8,8 +8,8 @@
                 {{group.description}}
             </div>
         </div>
-        <div class="group-element__products" v-if="products.length > 0">
-            <div class="group-element__products__product" v-for="product in products" :key="product.label"
+        <div class="group-element__products" v-if="productsForView.length > 0">
+            <div class="group-element__products__product" v-for="product in productsForView" :key="product.name+product.code"
                  @click="openDetailProduct(product.id)">
                 <div class="group-element__products__product__title">
                     {{product.name}}
@@ -18,7 +18,7 @@
                     Код: {{product.code}}
                 </div>
                 <div class="group-element__products__product__image">
-                    <img :src="linkMainImage(product.id)" :alt="product.name">
+                    <img :src="product.img" :alt="product.name">
                 </div>
             </div>
         </div>
@@ -38,7 +38,8 @@
         },
         name: 'GroupElement',
         data: () => ({
-            images: []
+            images: [],
+            productsForView: []
         }),
         computed: {
             currentRoute() {
@@ -54,17 +55,40 @@
             openDetailProduct(url) {
                 this.$router.push(`${this.$router.history.current.fullPath}/${url}`)
             },
-            linkMainImage(id) {
-                const index = this.images.findIndex((image) => {
-                    return Number(image.productId) === id;
-                });
-                return this.images[index].pathImage || 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Empty_set.svg/1200px-Empty_set.svg.png';
+            init(){
+                ProductImagesService.getAllImages().then(({data}) => {
+                    this.images = data
+                    return data
+                }).then((images) => {
+                    this.productsForView = this.products.map((product) => {
+                        const index = images.findIndex((image) => {
+                            return Number(image.productId) === product.id;
+                        });
+                        return {
+                            name: product.name,
+                            code: product.code,
+                            id: product.id,
+                            img: index > -1 ? images[index].pathImage : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Empty_set.svg/1200px-Empty_set.svg.png'
+                        }
+                    })
+                })
             }
         },
         created() {
-            ProductImagesService.getAllImages().then(({data}) => {
-                this.images = data
-            });
+            this.init();
+        },
+        beforeUpdate() {
+            this.productsForView = this.products.map((product) => {
+                const index = this.images.findIndex((image) => {
+                    return Number(image.productId) === product.id;
+                });
+                return {
+                    name: product.name,
+                    code: product.code,
+                    id: product.id,
+                    img: index > -1 ? this.images[index].pathImage : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Empty_set.svg/1200px-Empty_set.svg.png'
+                }
+            })
         }
     }
 </script>

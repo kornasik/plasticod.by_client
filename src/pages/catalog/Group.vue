@@ -37,6 +37,9 @@
         watch: {
             currentGroup() {
                 this.selectProductsForGroup();
+            },
+            viewProducts(value){
+                console.log(value)
             }
         },
         data: () => ({
