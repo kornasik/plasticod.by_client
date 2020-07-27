@@ -266,7 +266,7 @@
                 return 0;
             },
             calcPrice(item) {
-                return item.countProduct < 10 ? item.priceBeforeTen : item.priceBeforeHundred
+                return item.countProduct <= 10 ? item.priceBeforeTen : item.priceBeforeHundred
             },
         }
     }

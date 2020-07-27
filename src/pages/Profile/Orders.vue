@@ -91,10 +91,10 @@
                     let total = 0;
                     if (orderCopy.basket.length > 1) {
                         total = orderCopy.basket.reduce((next, current) => {
-                            return (current.countProduct < 10 ? current.priceBeforeTen : current.priceBeforeHundred * current.countProduct) + (next.countProduct < 10 ? next.priceBeforeTen : next.priceBeforeHundred * next.countProduct)
+                            return ((current.countProduct <= 10 ? current.priceBeforeTen : current.priceBeforeHundred) * current.countProduct) + ((next.countProduct <= 10 ? next.priceBeforeTen : next.priceBeforeHundred) * next.countProduct)
                         })
                     } else {
-                        total = orderCopy.basket[0].countProduct * orderCopy.basket[0].countProduct < 10 ? orderCopy.basket[0].priceBeforeTen : orderCopy.basket[0].priceBeforeHundred
+                        total = orderCopy.basket[0].countProduct * (orderCopy.basket[0].countProduct <= 10 ? orderCopy.basket[0].priceBeforeTen : orderCopy.basket[0].priceBeforeHundred)
                     }
                     return {
                         number: orderCopy.numberOrder,
@@ -102,7 +102,7 @@
                         customer: orderCopy.dataUser.fullName,
                         date: createdAt,
                         delivery: orderCopy.shipping === 'transportCompany' ? "Транспортной компанией" : "Самовывоз",
-                        total: total,
+                        total: total.toFixed(2),
                         email: orderCopy.dataUser.email
                     }
                 })

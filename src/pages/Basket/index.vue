@@ -139,7 +139,7 @@
                 console.log('asd')
             },
             calcPrice(item) {
-                return item.countProduct < 10 ? item.priceBeforeTen : item.priceBeforeHundred
+                return item.countProduct <= 10 ? item.priceBeforeTen : item.priceBeforeHundred
             },
             clearBasket() {
                 localStorage.removeItem('basket');

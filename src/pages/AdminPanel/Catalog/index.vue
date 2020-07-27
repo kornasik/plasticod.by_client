@@ -65,7 +65,7 @@
 
                         <v-tab-item>
                             <div :style="{display: 'flex !important', flexWrap: 'wrap'}">
-                                <v-card flat v-for="product in products" :key="product.name"
+                                <v-card flat v-for="product in products" :key="product.name + product.code"
                                         :style="{width: 'fit-content'}">
                                     <v-card-text>
                                         <v-card
@@ -143,9 +143,7 @@
                     v-model="snackbar"
                     color="00B0F0"
                     :right="true"
-                    :timeout="timeout"
                     :top="true"
-                    :vertical="mode === 'vertical'"
             >
                 {{snackbarText}}
                 <v-btn
@@ -192,11 +190,11 @@
             images: []
         }),
         watch: {
-            searchCode(value){
-              this.products = this.copyProducts.filter((product)=>{
-                  return product.code.indexOf(value) >= 0
-              })
-          }
+            searchCode(value) {
+                this.products = this.copyProducts.filter((product) => {
+                    return product.code.indexOf(value) >= 0
+                })
+            }
         },
         methods: {
             deleteProduct(id) {
@@ -237,23 +235,34 @@
                     }, 5000)
                 })
             },
+            sortProducts(a, b) {
+                if (Number(a.numberProduct) < Number(b.numberProduct)) {
+                    return -1;
+                }
+                if (Number(a.numberProduct) > Number(b.numberProduct)) {
+                    return 1;
+                }
+                return 0;
+            },
             getProducts() {
-                PostService.getProducts().then((products) => {
-                    products.data.forEach((product) => {
+                PostService.getProducts().then(async (products) => {
+                    let copyProducts = [...products.data];
+                    copyProducts.sort(this.sortProducts);
+                    let tempProduct = [];
+                    copyProducts.forEach((product) => {
                         ProductImagesService.getProductImages(product.id).then((images) => {
+                            let productCopy = {...product};
                             if (images.data.length > 0) {
-                                let productCopy = {...product};
                                 productCopy.image = images.data[0].pathImage;
-                                this.products.push(productCopy);
-                                this.copyProducts.push(productCopy)
                             } else {
-                                let productCopy = {...product};
                                 productCopy.image = '';
-                                this.products.push(productCopy)
-                                this.copyProducts.push(productCopy)
                             }
+                            tempProduct.push(productCopy)
+                            tempProduct.sort(this.sortProducts)
                         });
                     })
+                    this.products = tempProduct;
+                    this.copyProducts = tempProduct;
                 })
             },
             getGroups() {

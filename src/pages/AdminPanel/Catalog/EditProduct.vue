@@ -10,6 +10,7 @@
                         label="Группа"
                         v-model="product.group"
                 ></v-select>
+                <v-text-field v-model="product.numberProduct" label="Номер товара"></v-text-field>
                 <v-text-field v-model="product.name" label="Название товара" :rules="rules"
                               hide-details="auto"></v-text-field>
                 <v-text-field v-model="product.code" label="Код"></v-text-field>
@@ -78,7 +79,8 @@
                 codeCompatibility: '',
                 priceBeforeTen: '',
                 priceBeforeHundred: '',
-                priceAfterHundred: ''
+                priceAfterHundred: '',
+                numberProduct: ''
             },
             uploadImageData: {
                 displayFileName: null,

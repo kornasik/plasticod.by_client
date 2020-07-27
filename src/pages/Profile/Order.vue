@@ -39,7 +39,7 @@
                 </template>
                 <template v-slot:item.price="{item}">
                     <div>
-                        {{item.price}} BYN
+                        {{calcPriceForOne(item)}} BYN
                     </div>
                 </template>
                 <template v-slot:item.countProduct="{item}">
@@ -49,7 +49,7 @@
                 </template>
                 <template v-slot:item.total="{item}">
                     <div>
-                        {{Number(calcPriceOneProduct(item)) * Number(item.countProduct)}} BYN
+                        {{(Number(calcPriceOneProduct(item)) * Number(item.countProduct)).toFixed(2)}} BYN
                     </div>
                 </template>
                 <template v-slot:footer>
@@ -133,9 +133,9 @@
             calcTotal() {
                 let total = 0;
                 this.order.basket.forEach((item) => {
-                    total = total + this.calcPriceProduct(item)
+                    total = total + Number(this.calcPriceProduct(item))
                 });
-                return total
+                return Number(total).toFixed(2)
             },
             calcWeight() {
                 let weight = 0;
@@ -148,7 +148,7 @@
                 this.$router.push(`/catalog/${product.group.split(' ').join('').toLowerCase()}/${product.id}`);
             },
             calcPriceOneProduct(item){
-                return item.countProduct < 10 ? item.priceBeforeTen : item.priceBeforeHundred
+                return item.countProduct <= 10 ? item.priceBeforeTen : item.priceBeforeHundred
             },
             calcPriceProduct(product) {
                 if (product.priceBeforeTen || product.priceBeforeHundred) {
@@ -159,6 +159,9 @@
                 }
                 return 0;
             },
+            calcPriceForOne(item){
+                return (Number(item.countProduct) <= 10) ? item.priceBeforeTen : item.priceBeforeHundred
+            }
         }
     }
 </script>

@@ -178,7 +178,7 @@ export default {
     },
     rules: {
       required: value => !!value || "Required.",
-      phone: value => value.length > 8 || "Слишком короткий телефон",
+      phone: value => value.length === 9 || "Проверьте корректность ввода.",
       email: value => {
         const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return pattern.test(value) || "Invalid e-mail.";
