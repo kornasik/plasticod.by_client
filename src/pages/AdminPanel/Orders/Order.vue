@@ -43,7 +43,7 @@
                     </template>
                     <template v-slot:item.total="{item}">
                         <div>
-                            {{calcPriceProduct(item)}} BYN
+                            {{calcPriceProduct(item).toFixed(2)}} BYN
                         </div>
                     </template>
                     <template v-slot:footer>
@@ -244,7 +244,7 @@
                 this.order.basket.forEach((item) => {
                     total = total + this.calcPriceProduct(item)
                 });
-                return total
+                return total.toFixed(2)
             },
             calcWeight() {
                 let weight = 0;

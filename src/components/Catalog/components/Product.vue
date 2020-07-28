@@ -140,6 +140,21 @@
                 Закрыть
             </v-btn>
         </v-snackbar>
+        <v-snackbar
+                v-model="notValidCount"
+                color="red"
+                :right="true"
+                :top="true"
+        >
+            Недопустимое значение
+            <v-btn
+                    text
+                    color="success"
+                    @click="notValidCount = false"
+            >
+                Закрыть
+            </v-btn>
+        </v-snackbar>
     </div>
 </template>
 
@@ -162,20 +177,21 @@
             snackbar: false,
             images: [],
             mainImage: [0],
-            copyImages: []
+            copyImages: [],
+            notValidCount: false
         }),
         methods: {
             print() {
                 window.print();
             },
             addBasket() {
-                if (this.countProduct > 0) {
+                if (Number(this.countProduct) > 0) {
                     let basket = [];
                     if (localStorage.getItem('basket')) {
                         basket = JSON.parse(localStorage.getItem('basket'));
                     }
                     let obj = Object.assign({}, this.product);
-                    obj.countProduct = this.countProduct;
+                    obj.countProduct = Number(this.countProduct);
                     const idProduct = basket.findIndex((element) => {
                         return element.id === obj.id
                     });
@@ -192,6 +208,8 @@
                     setTimeout(() => {
                         this.snackbar = false;
                     }, 3000)
+                } else {
+                    this.notValidCount = true;
                 }
             },
             showLightbox: function (imageName) {

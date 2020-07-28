@@ -42,7 +42,9 @@
                         </template>
                         <template v-slot:item.count="{item}">
                             <div>
+                                <v-icon class="btn-counter" @click="decrementCounter(item)">mdi-minus</v-icon>
                                 <input type="number" v-model="item.countProduct" @change="changeCount">
+                                <v-icon class="btn-counter" @click="incrementCounter(item)">mdi-plus</v-icon>
                             </div>
                         </template>
                         <template v-slot:item.total="{item}">
@@ -199,6 +201,30 @@
                     return Number(product.priceBeforeHundred.split(',')[0]) * product.countProduct
                 }
                 return 0;
+            },
+            decrementCounter(item){
+                item.countProduct >= 2 ? item.countProduct-- : null;
+                let copyProducts = JSON.parse(localStorage.getItem('basket'));
+                const indexProduct = copyProducts.findIndex((product)=>{
+                    return Number(product.id) === Number(item.id)
+                })
+                copyProducts[indexProduct].countProduct = item.countProduct;
+                if (localStorage.getItem('token')) {
+                    UserService.updateUser(localStorage.getItem('token'), {basket: JSON.stringify(copyProducts)});
+                }
+                localStorage.setItem('basket', JSON.stringify(copyProducts));
+            },
+            incrementCounter(item){
+                item.countProduct++
+                let copyProducts = JSON.parse(localStorage.getItem('basket'));
+                const indexProduct = copyProducts.findIndex((product)=>{
+                    return Number(product.id) === Number(item.id)
+                })
+                copyProducts[indexProduct].countProduct = item.countProduct;
+                if (localStorage.getItem('token')) {
+                    UserService.updateUser(localStorage.getItem('token'), {basket: JSON.stringify(copyProducts)});
+                }
+                localStorage.setItem('basket', JSON.stringify(copyProducts));
             }
         },
         created() {
@@ -220,6 +246,7 @@
             } else {
                 this.loading = false
             }
+
         }
     }
 </script>
@@ -252,10 +279,23 @@
     input[type=number]::-webkit-outer-spin-button {
         height: 30px;
         width: 30px;
-        padding: 2px
+        padding: 2px;
+        display: none;
     }
 
     input[type=number] {
-        -moz-appearance: textfield;
+        -moz-appearance: button-arrow-next;
+        visibility: visible;
+    }
+
+    .btn-counter{
+        cursor: pointer;
+        color: #305496;
+    }
+
+    .btn-counter:hover{
+        background-color: lightgray;
+        color: white;
+        border-radius: 100px;
     }
 </style>
