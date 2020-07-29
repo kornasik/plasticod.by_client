@@ -5,9 +5,9 @@
         </div>
         <div class="shipping-and-payment__shipping">
             Мы работаем с юридическими лицами и индивидуальными предпринимателями. <br>
-            Получить приобретённый товар можно по адресу: г.Минск, ул.Сырокомли В., дом 7, "Автоцентр "АвтоМир", 2 этаж, пав. 240
+            Получить приобретённый товар можно по адресу: {{address}}
             <transition-group name="thumbnailfade" tag="div">
-                <img v-for="thumb in filteredImages"
+                <img v-for="thumb in images"
                      :key="thumb.id"
                      @click="showLightbox(thumb.name)"
                      :src="thumb.name"
@@ -55,24 +55,23 @@
             В случае неоплаты заказа в течение трех банковских дней после выставления "Продавцом" документов для оплаты, без предварительного уведомления о задержке платежа, заказ расформировывается.<br>
             <br>
             Реквизиты для оплаты:<br>
-            Индивидуальный предприниматель Андалюкевич Иван Иванович<br>
-            УНП 191801242<br>
-            {{temp}}<br>
-            в  РКЦ №7 ЗАО «БСБ Банк» ,  БИК: UNBSBY2X<br>
-            г.Минск, пр-т газеты «Звезда», 47<br>
+            {{requisites}}
             <img src="../../assets/bsbbank.png" alt="BsbBank">
         </div>
     </div>
 </template>
 
 <script>
+    import TutorialsService from "../../services/tutorials";
+
     export default {
         name: 'ShippingAndPayment',
         data: () => ({
             images: [],
             galleryFilter: 'all',
             temp: 'Р/с BY66 UNBS 301 301 143 800 100 079 33',
-            address: ''
+            address: '',
+            requisites: ''
         }),
         methods: {
             showLightbox: function (imageName) {
@@ -80,6 +79,27 @@
             },
             updateFilter(filterName) {
                 this.galleryFilter = filterName;
+            },
+            init() {
+                TutorialsService.getTutorials().then(({data}) => {
+                    if (data.photos) {
+                        if (JSON.parse(data.photos)) {
+                            this.images = JSON.parse(data.photos).map((photo, indexPhoto) => {
+                                return {
+                                    'name': photo,
+                                    'filter': 'image',
+                                    'id': 'image' + indexPhoto
+                                }
+                            })
+                        } else {
+                            this.images = []
+                        }
+                    } else {
+                        this.images = []
+                    }
+                    this.address = data.address;
+                    this.requisites = data.requisites;
+                })
             }
         },
         computed: {
@@ -91,6 +111,9 @@
                 }
 
             }
+        },
+        created() {
+            this.init();
         }
     }
 </script>
@@ -135,7 +158,11 @@
     }
 
     .shipping-and-payment__conditions{
+        display: flex;
+        flex-direction: column;
         padding: 20px;
+        overflow-wrap: break-word;
+        white-space: break-spaces;
     }
 
     .shipping-and-payment__conditions img {

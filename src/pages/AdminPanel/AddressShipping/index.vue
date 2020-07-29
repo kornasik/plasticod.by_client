@@ -20,13 +20,19 @@
                             v-model="address"
                             outlined
                     ></v-text-field>
+                    <v-textarea
+                            placeholder="Реквизиты"
+                            v-model="requisites"
+                            :filled="true"
+                            :solo="true"
+                    ></v-textarea>
                     <div class="main__images">
                         <div :style="{width: 'fit-content'}">
                             <div :style="{fontSize: '38px', fontWeight: 'bold', display: 'flex'}">
                                 Загрузить изображение
                             </div>
                             <input type="file" name="file" @change="onFileChange"/><br><br>
-                            <Images :images="images" :flex="true" v-if="this.images.length"/>
+                            <Images :images="images" :flex="true" v-if="this.images.length" @emitDeleteImage="emitDeleteImage"/>
                             <h2 v-else>Список изображений пуст!!!</h2>
                         </div>
                     </div>
@@ -53,7 +59,7 @@
 
 <script>
     import Images from "../Catalog/elements/Images";
-    import AddressShippingService from "../../../services/address-shipping";
+    import TutorialsService from "../../../services/tutorials";
 
     export default {
         name: 'About',
@@ -70,16 +76,20 @@
             },
             snackbar: false,
             existAbout: false,
-            address: ''
+            address: '',
+            requisites: ''
         }),
         created() {
             this.init();
         },
         methods: {
             save() {
-                AddressShippingService.updateShippingService({
-                    images: this.images,
-                    id: this.id,
+                const images = this.images.map((photos) => {
+                    return photos.pathImage
+                })
+                TutorialsService.updateTutorials({
+                    photos: JSON.stringify(images),
+                    requisites: this.requisites,
                     address: this.address
                 });
                 this.snackbar = true;
@@ -93,7 +103,9 @@
                     let reader = new FileReader();
                     reader.onload = e => {
                         this.uploadImageData.uploadFileData = e.target.result;
-                        this.images.push(e.target.result);
+                        this.images.push({
+                            pathImage: e.target.result
+                        });
                     };
                     reader.readAsDataURL(file);
                 }
@@ -103,23 +115,24 @@
                 return Math.round(size / sizeOneMByte);
             },
             init() {
-                AddressShippingService.getShippingService().then(({data}) => {
-                    this.images = data[0].images;
-                    this.address = data[0].address;
-                    this.id = data[0].id;
-                }).catch(() => {
-                    alert('Неполадки с сервером.');
-                    AddressShippingService.insertShippingService({
-                        images: [],
-                        address: ''
-                    }).then(()=>{
-                        AddressShippingService.getShippingService().then(({data}) => {
-                            this.images = data[0].images;
-                            this.address = data[0].address;
-                            this.id = data[0].id;
-                        })
-                    })
+                TutorialsService.getTutorials().then(({data}) => {
+                    if (data.photos) {
+                        if (JSON.parse(data.photos)) {
+                            this.images = JSON.parse(data.photos).map((photo) => {
+                                return {pathImage: photo}
+                            })
+                        } else {
+                            this.images = []
+                        }
+                    } else {
+                        this.images = []
+                    }
+                    this.address = data.address;
+                    this.requisites = data.requisites;
                 })
+            },
+            emitDeleteImage(index){
+                this.images.splice(index, 1)
             }
         }
     }
