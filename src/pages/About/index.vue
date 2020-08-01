@@ -18,8 +18,6 @@
         created() {
             AboutService.getAbout().then(({data}) => {
                 this.text = data[0].text
-                const a = this.text.split('↵');
-                console.log(a)
             })
         },
         methods: {

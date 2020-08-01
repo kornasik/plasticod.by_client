@@ -1,9 +1,9 @@
 <template>
     <div class="groups">
-        <div class="groups__header" @click="openGroup(group.name)">
+        <a class="groups__header" :href="`catalog/${group.name.split(' ').join('').toLowerCase()}`" @click="openGroup(group.name)">
             <div class="groups__header__title">{{group.name}}</div>
             <div class="groups__header__description">{{group.description}}</div>
-        </div>
+        </a>
         <div class="groups-body">
             <img
                     v-for="(image, imageIndex) in images"
@@ -29,7 +29,6 @@
         methods: {
             openGroup(nameGroup) {
                 this.$store.commit('setCurrentGroup', nameGroup);
-                this.$router.push(`catalog/${nameGroup.split(' ').join('').toLowerCase()}`)
             }
         },
         created() {
@@ -50,6 +49,7 @@
         color: white;
         border-bottom: 2px solid black;
         cursor: pointer;
+        text-decoration: none;
     }
 
     .groups__header:hover {

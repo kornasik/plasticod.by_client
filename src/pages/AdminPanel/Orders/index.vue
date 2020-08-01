@@ -168,6 +168,21 @@
                     this.orders.reverse();
                 })
             },
+            reformateData(date) {
+                let timeInMilliseconds = (new Date(date)).getTime();
+                const threeHoursInMilliseconds = 0;
+                timeInMilliseconds += threeHoursInMilliseconds;
+                const timeInFormat = new Date(timeInMilliseconds)
+                const correctDate = timeInFormat.getDate() < 10 ? '0' + timeInFormat.getDate() : timeInFormat.getDate();
+                const correctMonth = timeInFormat.getMonth() + 1 < 10 ? '0' + (timeInFormat.getMonth() + 1) : timeInFormat.getMonth() + 1;
+                const correctYear = timeInFormat.getFullYear();
+                const correctHours = timeInFormat.getHours() < 10 ? '0' + timeInFormat.getHours() : timeInFormat.getHours();
+                const correctMinutes = timeInFormat.getMinutes() < 10 ? '0' + timeInFormat.getMinutes() : timeInFormat.getMinutes();
+                const correctSeconds = timeInFormat.getSeconds() < 10 ? '0' + timeInFormat.getSeconds() : timeInFormat.getSeconds();
+                const newFormatDate = `${correctDate}.${correctMonth}.${correctYear}`;
+                const newFormatTimes = `${correctHours}:${correctMinutes}:${correctSeconds}`;
+                return newFormatDate + ' ' + newFormatTimes
+            },
             intervalGetOrders() {
                 setInterval(() => {
                     this.init();
@@ -175,11 +190,6 @@
             },
             transitionOrder(number) {
                 this.$router.push(`/admin/orders/${number}`)
-            },
-            reformateData(date) {
-                const newFormateDate = +date.split('-')[2].split('T')[0] + '.' + date.split('-')[1] + '.' + date.split('-')[0];
-                const newFormateTimes = date.split('-')[2].split('T')[1].split('.')[0];
-                return newFormateDate + ' ' + newFormateTimes
             },
             async handleStatus(event, item) {
                 await OrderService.getAllOrders().then(({data}) => {

@@ -41,15 +41,11 @@
             ></v-text-field>
             <v-text-field
               v-model="valueFields.postAddress"
-              label="Почтовый адрес *"
-              :rules="[rules.required]"
-              :error="errors.postAddress"
+              label="Почтовый адрес"
             ></v-text-field>
             <v-text-field
               v-model="valueFields.postCode"
-              label="Почтовый индекс*"
-              :rules="[rules.required]"
-              :error="errors.postCode"
+              label="Почтовый индекс"
             ></v-text-field>
             <v-text-field
               v-model="valueFields.unp"
@@ -190,8 +186,6 @@ export default {
       confirmPassword: false,
       nameCompany: false,
       legalAddress: false,
-      postAddress: false,
-      postCode: false,
       unp: false,
       fio: false,
       phoneNumber: false,
@@ -206,8 +200,6 @@ export default {
         this.confirmPassword &&
         this.valueFields.nameCompany &&
         this.valueFields.legalAddress &&
-        this.valueFields.postCode &&
-        this.valueFields.postAddress &&
         this.valueFields.unp &&
         this.valueFields.fullName &&
         this.valueFields.phoneNumber &&
@@ -219,8 +211,6 @@ export default {
           this.errors.confirmPassword = false;
           this.errors.nameCompany = false;
           this.errors.legalAddress = false;
-          this.errors.postAddress = false;
-          this.errors.postCode = false;
           this.errors.unp = false;
           this.errors.fio = false;
           this.errors.phoneNumber = false;
@@ -255,8 +245,6 @@ export default {
         this.errors.confirmPassword = !this.confirmPassword;
         this.errors.nameCompany = !this.valueFields.nameCompany;
         this.errors.legalAddress = !this.valueFields.legalAddress;
-        this.errors.postAddress = !this.valueFields.postAddress;
-        this.errors.postCode = !this.valueFields.postCode;
         this.errors.unp = !this.valueFields.unp;
         this.errors.fio = !this.valueFields.fullName;
         this.errors.phoneNumber = !this.valueFields.phoneNumber;

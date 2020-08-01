@@ -21,7 +21,7 @@
                 order.numberOrder : ''}}
             </div>
             <div :style="{margin:'10px 0'}"><strong>Оформлен</strong> {{Object.keys(order).length > 0 ?
-                reformateData(order.basket[0].createdAt) : ''}}
+                reformateData(dateCreated) : ''}}
             </div>
             <v-data-table
                     :headers="headers"
@@ -77,6 +77,7 @@
         data: () => ({
             order: {},
             loading: true,
+            dateCreated: '',
             headers: [
                 {
                     text: 'Товар',
@@ -106,7 +107,7 @@
         }),
         created() {
             OrderService.getOrders(localStorage.getItem('token')).then(({data}) => {
-                data.forEach(({order}) => {
+                data.forEach(({order, createdAt}) => {
                     if (JSON.parse(order).numberOrder === this.$router.history.current.params.id) {
                         let copyOrder = {...JSON.parse(order)};
                         copyOrder.basket.forEach((product) => {
@@ -116,6 +117,7 @@
                         });
                         setTimeout(() => {
                             this.order = copyOrder
+                            this.dateCreated = createdAt;
                             this.loading = false;
                         }, 2500);
                     }
@@ -126,9 +128,19 @@
         },
         methods: {
             reformateData(date) {
-                const newFormateDate = +date.split('-')[2].split('T')[0] + '.' + date.split('-')[1] + '.' + date.split('-')[0];
-                const newFormateTimes = date.split('-')[2].split('T')[1].split('.')[0];
-                return newFormateDate + ' ' + newFormateTimes
+                let timeInMilliseconds = (new Date(date)).getTime();
+                const threeHoursInMilliseconds = 0;
+                timeInMilliseconds += threeHoursInMilliseconds;
+                const timeInFormat = new Date(timeInMilliseconds)
+                const correctDate = timeInFormat.getDate() < 10 ? '0' + timeInFormat.getDate() : timeInFormat.getDate();
+                const correctMonth = timeInFormat.getMonth() + 1 < 10 ? '0' + (timeInFormat.getMonth() + 1) : timeInFormat.getMonth() + 1;
+                const correctYear = timeInFormat.getFullYear();
+                const correctHours = timeInFormat.getHours() < 10 ? '0' + timeInFormat.getHours() : timeInFormat.getHours();
+                const correctMinutes = timeInFormat.getMinutes() < 10 ? '0' + timeInFormat.getMinutes() : timeInFormat.getMinutes();
+                const correctSeconds = timeInFormat.getSeconds() < 10 ? '0' + timeInFormat.getSeconds() : timeInFormat.getSeconds();
+                const newFormatDate = `${correctDate}.${correctMonth}.${correctYear}`;
+                const newFormatTimes = `${correctHours}:${correctMinutes}:${correctSeconds}`;
+                return newFormatDate + ' ' + newFormatTimes
             },
             calcTotal() {
                 let total = 0;

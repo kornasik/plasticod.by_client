@@ -41,9 +41,9 @@
                             </div>
                         </template>
                         <template v-slot:item.count="{item}">
-                            <div>
+                            <div :style="{display: 'flex', justifyContent: 'space-around'}">
                                 <v-icon class="btn-counter" @click="decrementCounter(item)">mdi-minus</v-icon>
-                                <input type="number" v-model="item.countProduct" @change="changeCount">
+                                <div>{{item.countProduct}}</div>
                                 <v-icon class="btn-counter" @click="incrementCounter(item)">mdi-plus</v-icon>
                             </div>
                         </template>
@@ -136,9 +136,6 @@
         methods: {
             transitionOnProduct(product) {
                 this.$router.push(`catalog/${product.group.split(' ').join('').toLowerCase()}/${product.id}`);
-            },
-            asd() {
-                console.log('asd')
             },
             calcPrice(item) {
                 return item.countProduct <= 10 ? item.priceBeforeTen : item.priceBeforeHundred

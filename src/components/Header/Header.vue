@@ -2,95 +2,93 @@
     <div class="header">
         <div class="header__authorization-basket">
             <div v-if="!$store.state.User.login" :style="{width: 'fit-content',marginLeft: 'auto'}">
-                <button class="header__authorization-basket__basket button" @click="$router.push('/basket')">
-                    <v-icon color="black" left small>mdi-basket</v-icon>
-                    Корзина
-                </button>
-                <button class="header__authorization-basket__authorization button" @click="openSubButton">
-                    Вход/Регистрация
-                </button>
-                <div class="header__wrapper-for-login-registration" v-if="isLoginView">
-                    <button class="header__wrapper-for-login-registration__login button" @click="transitionOnPageLogin">
-                        Войти
+                <div style="display: flex">
+                    <a class="header__authorization-basket__basket button" href="/basket">
+                        <v-icon color="black" left small>mdi-basket</v-icon>
+                        Корзина
+                    </a>
+                    <button class="header__authorization-basket__authorization button" @click="openSubButton">
+                        Вход/Регистрация
                     </button>
-                    <button class="header__wrapper-for-login-registration__registration button"
+                </div>
+                <div style="display: flex" class="header__wrapper-for-login-registration" v-if="isLoginView">
+                    <a class="header__wrapper-for-login-registration__login button" @click="transitionOnPageLogin" href="/login">
+                        Войти
+                    </a>
+                    <a class="header__wrapper-for-login-registration__registration button" href="/registration"
                             @click="()=>{
                                 this.isLoginView = false;
-                                $router.push('/registration')
                             }">Регистрация
-                    </button>
+                    </a>
                 </div>
             </div>
 
-            <div v-else :style="{width: 'fit-content',marginLeft: 'auto'}">
-                <button class="header__authorization-basket__basket button" @click="$router.push('/basket')">
+            <div v-else :style="{width: 'fit-content',marginLeft: 'auto', display: 'flex'}">
+                <a class="header__authorization-basket__basket button" href="/basket">
                     <v-icon color="black" left small>mdi-basket</v-icon>
                     Корзина
-                </button>
+                </a>
                 <button class="header__authorization-basket__authorization button" @click="openDropdown">
                     Мой профиль
                 </button>
                 <div v-if="isDropdown"
-                     :style="{position: 'absolute', right: 0, backgroundColor: 'white', width: '179px',marginTop: '1px', zIndex: 999}">
+                     :style="{position: 'absolute', right: 0, backgroundColor: 'white', width: '179px',marginTop: '32px', zIndex: 999}">
                     <div class="dropdown-item">{{$store.state.User.dataUser.nameCompany}}</div>
-                    <div class="dropdown-item" @click="()=>{
-                        $router.push('/profile')
+                    <a class="dropdown-item" href="/profile" @click="()=>{
                         this.isDropdown = false
-                    }">Личный кабинет
-                    </div>
-                    <div class="dropdown-item" @click="()=>{
-                        $router.push('/profile/orders')
+                    }">Личный кабинет</a>
+                <a class="dropdown-item" href="/profile/orders" @click="()=>{
                         this.isDropdown = false
                     }">Заказы
-                    </div>
-                    <div class="dropdown-item" @click="()=>{
-                        $router.push('/profile/information-support')
+                </a>
+                <a class="dropdown-item" href="/profile/information-support" @click="()=>{
                         this.isDropdown = false
                     }">Информ.поддержка
-                    </div>
-                    <div class="dropdown-item" @click="logout">Выйти</div>
-                </div>
+                </a>
+                <div class="dropdown-item" @click="logout">Выйти</div>
             </div>
+        </div>
 
+    </div>
+    <div class="header__contacts">
+        <div class="header__contacts__left-part">
+            <h1 :style="{width: '630px'}">Пластиковые органайзеры с выдвижными ячейками</h1>
+            <h3>оптовые продажи {{$store.state.General.numberPhone}}; info@plasticod.by</h3>
         </div>
-        <div class="header__contacts">
-            <div class="header__contacts__left-part">
-                <h1 :style="{width: '630px'}">Пластиковые органайзеры с выдвижными ячейками</h1>
-                <h3>оптовые продажи {{$store.state.General.numberPhone}}; info@plasticod.by</h3>
+        <div class="header__contacts__right-part">
+            <div class="header__contacts__right-part__logo" @click="$router.push('/')">
+                PLASTIC<br>Organizers<br>with<br>Drawers
             </div>
-            <div class="header__contacts__right-part">
-                <div class="header__contacts__right-part__logo" @click="$router.push('/')">
-                    PLASTIC<br>Organizers<br>with<br>Drawers
-                </div>
-            </div>
         </div>
-        <div v-if="currentRoute === 'about'" class="header__slider">
-            <v-carousel
-                    cycle
-                    height="400"
-                    width="fit-content"
-                    hide-delimiter-background
-                    show-arrows-on-hover
+    </div>
+    <div v-if="currentRoute === 'about'" class="header__slider">
+        <v-carousel
+                cycle
+                height="400"
+                width="fit-content"
+                hide-delimiter-background
+                show-arrows-on-hover
+        >
+            <v-carousel-item
+                    v-for="(image, i) in this.$store.state.General.images"
+                    :key="i"
             >
-                <v-carousel-item
-                        v-for="(image, i) in this.$store.state.General.images"
-                        :key="i"
-                >
-                    <img class="carousel-img" :src="image" :alt="`slide-${i}`">
-                </v-carousel-item>
-            </v-carousel>
-        </div>
-        <div class="header__menu">
-            <button
-                    class="button"
-                    :class="[currentRoute === item.id ? 'active' : '']"
-                    v-for="item in menu"
-                    :key="item.label"
-                    @click="transitionOnRoute(item.link, item.id)"
-            >
-                {{item.label}}
-            </button>
-        </div>
+                <img class="carousel-img" :src="image" :alt="`slide-${i}`">
+            </v-carousel-item>
+        </v-carousel>
+    </div>
+    <div class="header__menu">
+        <a
+                class="button btn-menu"
+                :class="[currentRoute === item.id ? 'active' : '']"
+                v-for="item in menu"
+                :key="item.label"
+                :href="item.link"
+                @click="transitionOnRoute(item.id)"
+        >
+            <div style="margin: auto 0; height: fit-content">{{item.label}}</div>
+        </a>
+    </div>
     </div>
 </template>
 
@@ -126,8 +124,7 @@
             isDropdown: false
         }),
         methods: {
-            transitionOnRoute(link, id) {
-                this.$router.push(link);
+            transitionOnRoute(id) {
                 this.$store.commit('setCurrentRoute', id);
                 this.currentRoute = id;
             },
@@ -135,7 +132,6 @@
                 this.isLoginView = !this.isLoginView;
             },
             transitionOnPageLogin() {
-                this.$router.push('/login');
                 this.isLoginView = false;
             },
             openDropdown() {
@@ -153,6 +149,11 @@
         },
         created() {
             this.currentRoute = this.$router.history.current.name;
+            document.body.addEventListener('click', (event) => {
+                if (event.target.className !== 'header__authorization-basket__authorization button') {
+                    this.isDropdown = false;
+                }
+            })
         }
     }
 </script>
@@ -165,6 +166,10 @@
         display: flex;
     }
 
+    .header__authorization-basket a {
+        color: black;
+    }
+
     .button {
         padding: 3px 10px;
         background-color: #00B0F0;
@@ -172,6 +177,12 @@
         border-top: 1px solid black;
         margin-left: auto;
         width: 180px;
+    }
+
+    .btn-menu{
+        color: white;
+        display: flex;
+        justify-content: center;
     }
 
     .button:hover {
@@ -249,8 +260,9 @@
     }
 
     .dropdown-item {
+        display: block;
         background-color: #0070C0;
-        color: white;
+        color: white!important;
         text-align: center;
         padding: 7px;
         font-size: 13px;
@@ -271,9 +283,16 @@
         background-color: #0070C0;
     }
 
-    .carousel-img{
+    .carousel-img {
         height: 100%;
         margin: 0 auto;
         display: block;
+    }
+
+    a{
+        display: block;
+        text-decoration: none;
+        text-align: center;
+        color: black;
     }
 </style>

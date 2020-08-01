@@ -56,15 +56,11 @@
                                     />
                                     <v-text-field
                                             v-model="valueFields.postAddress"
-                                            label="Почтовый адрес *"
-                                            :error="errors.postAddress"
-                                            :messages="errors.postAddress ? 'Поле не заполнено' : ''"
+                                            label="Почтовый адрес"
                                     />
                                     <v-text-field
                                             v-model="valueFields.postCode"
-                                            label="Почтовый индекс *"
-                                            :error="errors.postCode"
-                                            :messages="errors.postCode ? 'Поле не заполнено' : ''"
+                                            label="Почтовый индекс"
                                     />
                                     <v-text-field
                                             v-model="valueFields.email"
@@ -272,8 +268,6 @@
                 phoneNumber: false,
                 nameCompany: false,
                 legalAddress: false,
-                postAddress: false,
-                postCode: false,
                 email: false,
                 unp: false
             },
@@ -314,7 +308,7 @@
                 phoneNumber: ""
             },
             rules: {
-                required: value => !!value || "Required.",
+                required: value => !!value || "Некорректно введена почта.",
                 phone: value => value.length === 9 || "Проверьте корректность ввода.",
                 counter: value => value.length <= 20 || "Max 20 characters",
                 email: value => {
@@ -395,6 +389,7 @@
                 }
             },
             addAddressShipping(addressShipping) {
+                console.log(addressShipping)
                 this.addressShipping = addressShipping;
                 if (localStorage.getItem("token")) {
                     UserService.updateUser(localStorage.getItem("token"), {
@@ -506,8 +501,6 @@
             nextStep() {
                 this.valueFields.nameCompany ? this.errors.nameCompany = false : this.errors.nameCompany = true
                 this.valueFields.legalAddress ? this.errors.legalAddress = false : this.errors.legalAddress = true
-                this.valueFields.postAddress ? this.errors.postAddress = false : this.errors.postAddress = true
-                this.valueFields.postCode ? this.errors.postCode = false : this.errors.postCode = true
                 this.validEmail(this.valueFields.email) ? this.errors.email = false : this.errors.email = true
                 this.valueFields.unp ? this.errors.unp = false : this.errors.unp = true
                 this.valueFields.fullName ? this.errors.fullName = false : this.errors.fullName = true
@@ -516,8 +509,6 @@
                 if (
                     this.valueFields.nameCompany &&
                     this.valueFields.legalAddress &&
-                    this.valueFields.postAddress &&
-                    this.valueFields.postCode &&
                     this.valueFields.email &&
                     this.valueFields.unp &&
                     this.valueFields.fullName &&

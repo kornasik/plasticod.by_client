@@ -5,7 +5,8 @@
             <div class="product-detail__image">
                 <div class="product-detail__image__main" v-if="copyImages.length > 0">
                     <transition-group name="thumbnailfade1" tag="div">
-                        <img v-for="image in mainImage" :src="image.name" alt="main-img" @click="showLightbox(image.name)" :key="image.name">
+                        <img v-for="image in mainImage" :src="image.name" alt="main-img"
+                             @click="showLightbox(image.name)" :key="image.name">
                     </transition-group>
                     <transition-group name="thumbnailfade" tag="div" class="min-photo">
                         <img v-for="thumb in images"
@@ -100,8 +101,8 @@
                 <div class="product-detail__count">
                     <div :style="{display: 'flex', flexDirection: 'column', width: 'fit-content'}">
                         <button class="button-count" @click="countProduct++">+</button>
-                        <input class="count" v-model="countProduct">
-                        <button class="button-count" @click="countProduct > 0 ? countProduct-- : null">-</button>
+                        <input type="number" class="count" v-model="countProduct" @input="inputCountProduct">
+                        <button class="button-count" @click="countProduct > 1 ? countProduct-- : null">-</button>
                     </div>
                     <div class="wrapper-button-add-basket">
                         <button class="button-add-basket" @click="addBasket">В корзину</button>
@@ -155,6 +156,21 @@
                 Закрыть
             </v-btn>
         </v-snackbar>
+        <v-snackbar
+                v-model="notProduct"
+                color="red"
+                :right="true"
+                :top="true"
+        >
+            Данного товара нету на складе!
+            <v-btn
+                    text
+                    color="white"
+                    @click="notValidCount = false"
+            >
+                Закрыть
+            </v-btn>
+        </v-snackbar>
     </div>
 </template>
 
@@ -172,44 +188,55 @@
         inject: ['theme'],
         data: () => ({
             product: {},
-            countProduct: 0,
+            countProduct: 1,
             loading: true,
             snackbar: false,
             images: [],
             mainImage: [0],
             copyImages: [],
-            notValidCount: false
+            notValidCount: false,
+            notProduct: false
         }),
         methods: {
             print() {
                 window.print();
             },
+            inputCountProduct(event) {
+                const countProduct = event.target.value;
+                if (Number(countProduct) < 0) {
+                    this.countProduct = Number(countProduct) * -1;
+                }
+            },
             addBasket() {
-                if (Number(this.countProduct) > 0) {
-                    let basket = [];
-                    if (localStorage.getItem('basket')) {
-                        basket = JSON.parse(localStorage.getItem('basket'));
-                    }
-                    let obj = Object.assign({}, this.product);
-                    obj.countProduct = Number(this.countProduct);
-                    const idProduct = basket.findIndex((element) => {
-                        return element.id === obj.id
-                    });
-                    if (idProduct >= 0) {
-                        basket[idProduct].countProduct += obj.countProduct
+                if (Number(this.product.priceBeforeTen) > 0 && Number(this.product.priceBeforeHundred) > 0) {
+                    if (Number(this.countProduct) > 0) {
+                        let basket = [];
+                        if (localStorage.getItem('basket')) {
+                            basket = JSON.parse(localStorage.getItem('basket'));
+                        }
+                        let obj = Object.assign({}, this.product);
+                        obj.countProduct = Number(this.countProduct);
+                        const idProduct = basket.findIndex((element) => {
+                            return element.id === obj.id
+                        });
+                        if (idProduct >= 0) {
+                            basket[idProduct].countProduct += obj.countProduct
+                        } else {
+                            basket.push(obj);
+                        }
+                        if (localStorage.getItem('token')) {
+                            UserService.updateUser(localStorage.getItem('token'), {basket: JSON.stringify(basket)});
+                        }
+                        localStorage.setItem('basket', JSON.stringify(basket));
+                        this.snackbar = true;
+                        setTimeout(() => {
+                            this.snackbar = false;
+                        }, 3000)
                     } else {
-                        basket.push(obj);
+                        this.notValidCount = true;
                     }
-                    if (localStorage.getItem('token')) {
-                        UserService.updateUser(localStorage.getItem('token'), {basket: JSON.stringify(basket)});
-                    }
-                    localStorage.setItem('basket', JSON.stringify(basket));
-                    this.snackbar = true;
-                    setTimeout(() => {
-                        this.snackbar = false;
-                    }, 3000)
                 } else {
-                    this.notValidCount = true;
+                    this.notProduct = true;
                 }
             },
             showLightbox: function (imageName) {
@@ -423,33 +450,41 @@
         height: 112px;
     }
 
-/*    .product-detail__image__main img:nth-child(2) {
-        margin: 0;
-        border-top: none;
-        width: 111px;
-        height: 112px;
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        height: 30px;
+        width: 30px;
+        padding: 2px;
+        display: none;
     }
 
-    .product-detail__image__main img:nth-child(3) {
-        margin: 0;
-        border-top: none;
-        width: 111px;
-        height: 112px;
-    }
+    /*    .product-detail__image__main img:nth-child(2) {
+            margin: 0;
+            border-top: none;
+            width: 111px;
+            height: 112px;
+        }
 
-    .product-detail__image__main img:nth-child(4) {
-        margin: 0;
-        border-top: none;
-        width: 111px;
-        height: 112px;
-    }
+        .product-detail__image__main img:nth-child(3) {
+            margin: 0;
+            border-top: none;
+            width: 111px;
+            height: 112px;
+        }
 
-    .product-detail__image__main img:nth-child(5) {
-        margin: 0;
-        border-top: none;
-        width: 111px;
-        height: 112px;
-    }*/
+        .product-detail__image__main img:nth-child(4) {
+            margin: 0;
+            border-top: none;
+            width: 111px;
+            height: 112px;
+        }
+
+        .product-detail__image__main img:nth-child(5) {
+            margin: 0;
+            border-top: none;
+            width: 111px;
+            height: 112px;
+        }*/
 
     @media print {
         * {

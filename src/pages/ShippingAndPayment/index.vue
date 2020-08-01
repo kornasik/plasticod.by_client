@@ -25,25 +25,19 @@
         <div class="demarcation-strip"/>
 
         <div class="shipping-and-payment__about-company">
-            <div class="shipping-and-payment__about-company__logo">
-                <img src="../../assets/autospace.png" alt="AutoSpace">
+            <div class="shipping-and-payment__about-company__logo" v-if="logoTransportCompany.length > 0">
+                <img v-for="image in logoTransportCompany" :src="image" alt="AutoSpace" :key="image">
             </div>
             <div class="shipping-and-payment__about-company__description">
-                Доставка товара по г.Минску не осуществляется. <br>
-                Доставка приобретённого товара по регионам республики производится с помощью компании "Автоспейс".<br>
-                С условиями работы и географией доставки компании "Автоспейс" можно ознакомиться перейдя по
-                <a href="http://www.autospace.by/about/gruzoperevozki">ссылке</a>.<br>
-                Стоимость доставки согласовывается дополнительно после оформления заказа.<br>
-                По договорённости с покупателем стоимость доставки может быть:<br>
-                1.Включена в стоимость товара;<br>
-                2. Оформлена отдельным актом выполненных работ, который будет передаваться "Покупателю" вместе с документами на товар.<br>
+                {{textTransportCompany}}
             </div>
         </div>
 
         <div class="demarcation-strip"/>
 
         <div class="shipping-and-payment__sentence">
-            Мы готовы передать товар любой другой транспортной компании с которой сотрудничает "Покупатель" с оформлением всех необходимых товарно-транспортных документов.
+            Мы готовы передать товар любой другой транспортной компании с которой сотрудничает "Покупатель" с
+            оформлением всех необходимых товарно-транспортных документов.
         </div>
 
         <div class="shipping-and-payment__title">
@@ -51,8 +45,9 @@
         </div>
 
         <div class="shipping-and-payment__conditions">
-            Оплата за товар производится только по безналичному расчёту после подтверждения заказа "Продавцом". <br>
-            В случае неоплаты заказа в течение трех банковских дней после выставления "Продавцом" документов для оплаты, без предварительного уведомления о задержке платежа, заказ расформировывается.<br>
+            Оплата за товар производится только по безналичному расчёту после выставления «Покупателю» счёта на оплату. <br>
+            В случае неоплаты заказа в течение трех банковских дней после выставления "Продавцом" документов для оплаты,
+            без предварительного уведомления о задержке платежа, заказ расформировывается.<br>
             <br>
             Реквизиты для оплаты:<br>
             {{requisites}}
@@ -71,7 +66,9 @@
             galleryFilter: 'all',
             temp: 'Р/с BY66 UNBS 301 301 143 800 100 079 33',
             address: '',
-            requisites: ''
+            requisites: '',
+            logoTransportCompany: [],
+            textTransportCompany: ''
         }),
         methods: {
             showLightbox: function (imageName) {
@@ -97,8 +94,18 @@
                     } else {
                         this.images = []
                     }
+                    if (data.imageTransportCompany !== null) {
+                        if (JSON.parse(data.imageTransportCompany)) {
+                            this.logoTransportCompany = JSON.parse(data.imageTransportCompany)
+                        } else {
+                            this.logoTransportCompany = []
+                        }
+                    } else {
+                        this.logoTransportCompany = []
+                    }
                     this.address = data.address;
                     this.requisites = data.requisites;
+                    this.textTransportCompany = data.textTranposrtCompany;
                 })
             }
         },
@@ -131,19 +138,19 @@
         padding: 20px;
     }
 
-    .demarcation-strip{
+    .demarcation-strip {
         background-color: #00B0F0;
         width: 100%;
         height: 20px;
     }
 
-    .shipping-and-payment__about-company{
+    .shipping-and-payment__about-company {
         display: flex;
         align-items: center;
         padding: 20px;
     }
 
-    .shipping-and-payment__about-company__logo img{
+    .shipping-and-payment__about-company__logo img {
         margin-right: 20px;
     }
 
@@ -153,11 +160,11 @@
         height: 200px;
     }
 
-    .shipping-and-payment__sentence{
+    .shipping-and-payment__sentence {
         padding: 20px;
     }
 
-    .shipping-and-payment__conditions{
+    .shipping-and-payment__conditions {
         display: flex;
         flex-direction: column;
         padding: 20px;
@@ -168,5 +175,10 @@
     .shipping-and-payment__conditions img {
         padding: 10px;
         width: 185px;
+    }
+
+    .shipping-and-payment__about-company__description {
+        word-wrap: break-word;
+        white-space: break-spaces;
     }
 </style>

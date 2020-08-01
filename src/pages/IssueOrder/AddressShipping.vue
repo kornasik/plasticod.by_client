@@ -42,7 +42,7 @@
                         outlined
                         name="input-7-4"
                         label="Комментарий"
-                        :v-model="address.comment"
+                        v-model="address.comment"
                 ></v-textarea>
             </v-col>
             <Button :text-button="'Продолжить'" @click="nextStep"/>
@@ -65,7 +65,6 @@
         },
         watch: {
           dataUser(){
-              console.log('dataUser')
               this.initFields();
           }
         },
@@ -91,7 +90,7 @@
             },
             async initFields() {
                 const dataUser = await this.$store.state.User.dataUser;
-                this.address.country = dataUser.country;
+                this.address.country = 'Беларусь';
                 this.address.region = dataUser.region;
                 this.address.city = dataUser.city;
                 this.address.street = dataUser.street;

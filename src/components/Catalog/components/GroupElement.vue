@@ -9,8 +9,7 @@
             </div>
         </div>
         <div class="group-element__products" v-if="productsForView.length > 0">
-            <div class="group-element__products__product" v-for="product in productsForView" :key="product.name+product.code"
-                 @click="openDetailProduct(product.id)">
+            <a class="group-element__products__product" :href="`${$router.history.current.fullPath}/${product.id}`" v-for="product in productsForView" :key="product.name+product.code">
                 <div class="group-element__products__product__title">
                     {{product.name}}
                 </div>
@@ -20,7 +19,7 @@
                 <div class="group-element__products__product__image">
                     <img :src="product.img" :alt="product.name">
                 </div>
-            </div>
+            </a>
         </div>
         <div :style="{padding: '30px', fontSize: '23px'}" v-else>
             В данной группе нету товаров!
@@ -46,15 +45,7 @@
                 return this.$router.history.current.params.id
             }
         },
-        watch: {
-            currentRoute() {
-                console.log('asd')
-            }
-        },
         methods: {
-            openDetailProduct(url) {
-                this.$router.push(`${this.$router.history.current.fullPath}/${url}`)
-            },
             init(){
                 ProductImagesService.getAllImages().then(({data}) => {
                     this.images = data
@@ -130,6 +121,7 @@
         text-align: center;
         margin: 1.4px;
         cursor: pointer;
+        text-decoration: none;
     }
 
     .group-element__products__product__image img {

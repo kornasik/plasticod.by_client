@@ -22,7 +22,7 @@
 </template>
 
 <script>
-        import ExampleUsingService from "../../services/example-using";
+    import ExampleUsingService from "../../services/example-using";
 
     export default {
         name: 'ExampleUsing',
@@ -47,10 +47,9 @@
                 }
             }
         },
-        created(){
-            ExampleUsingService.getExampleUsing().then(({data})=>{
-                console.log(data)
-                this.images = data.map((image, idImage)=>{
+        created() {
+            ExampleUsingService.getExampleUsing().then(({data}) => {
+                this.images = data.map((image, idImage) => {
                     return {
                         name: image.image,
                         filter: 'plasticod',
@@ -64,7 +63,7 @@
 </script>
 
 <style scoped>
-    .examples-using__title{
+    .examples-using__title {
         color: white;
         font-size: 18px;
         font-weight: bold;
@@ -78,10 +77,11 @@
         justify-content: space-between;
     }
 
-     img {
+    img {
         padding: 10px;
-        width:33.3%;
+        width: 33.3%;
         height: 200px;
+        cursor: pointer;
     }
 
 </style>

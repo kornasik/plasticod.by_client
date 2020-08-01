@@ -1,14 +1,15 @@
 <template>
     <div class="group-sidebar">
-        <button
+        <a
                 class="button"
                 v-for="group in groups"
                 :class="[group.name.split(' ').join('').toLowerCase() === currentGroup ? 'active' : '']"
                 :key="group.id"
+                :href="`/catalog/${group.name.split(' ').join('').toLowerCase()}`"
                 @click="transitionLink(group.name)"
         >
             {{group.name}}
-        </button>
+        </a>
     </div>
 </template>
 
@@ -38,7 +39,6 @@
         methods: {
             transitionLink(nameGroup) {
                 this.$store.commit('setCurrentGroup', nameGroup);
-                this.$router.push(`/catalog/${nameGroup.split(' ').join('').toLowerCase()}`);
                 this.currentGroup = nameGroup.split(' ').join('').toLowerCase();
             }
         }
@@ -52,6 +52,8 @@
         margin: 10px 20px;
         width: 180px;
         color: white;
+        text-decoration: none;
+        text-align: center;
     }
 
     .button:hover {

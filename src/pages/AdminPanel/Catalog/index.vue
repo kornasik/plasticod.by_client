@@ -355,7 +355,6 @@
                 });
             },
             emitDeleteImage({id}) {
-                console.log(id)
                 GroupImagesService.deleteGroupImage(id)
                 this.images = this.images.filter((image) => {
                     return !(image.id === id)

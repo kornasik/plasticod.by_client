@@ -23,7 +23,6 @@
         }),
         created() {
             AddressShippingService.getShippingService().then(({data}) => {
-                console.log(data)
                 this.listAddress = data;
             })
         }
